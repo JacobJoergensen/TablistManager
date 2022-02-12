@@ -12,9 +12,9 @@ plural expression [the] (text|content[s]) (of|from) [(url|link|[web]site)] %stri
 	return type: strings
 	get:
 		set {_input} to try new BufferedReader(try new InputStreamReader(try new URL(expr-1).openStream()))
-		set {_r::*} to ...try {_input}.lines()
+		set {_q::*} to ...try {_input}.lines()
 		try {_input}.close()
-		return {_r::*}
+		return {_q::*}
 
 #Generation
 on load:
