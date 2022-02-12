@@ -20,7 +20,7 @@ plural expression [the] (text|content[s]) (of|from) [(url|link|[web]site)] %stri
 on load:
 	loop "skript-reflect", "skript-yaml" and "Vault": 
 		if server.getServer().getPluginManager().getPlugin(loop-value) is not set:
-			Skript.error("&c&lADDON CHECKER &7You are missing the following Skript addons: &c&n%loop-value%&r!")
+			Skript.error("&c&lADDON CHECKER &7You are missing the following Skript addons: &c&n%loop-value%")
 			stop
 	if yaml file "plugins/TablistManager/Config.yml" does not exist:
 		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
@@ -38,7 +38,7 @@ on load:
 		set {_version} to first element of ...{_input}.lines() 
 		{_input}.close()
 		if "%{_version}%" != "0.5":
-			Skript.error("&c&lUPDATE CHECKER &7You are currently running an outdated version of TablistManager! Current version: &c&n0.5&r. Latest version: &a&n%{_version}%&r.")
+			Skript.error("&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&7Current version: &c&n0.5&8) - (&7Latest version: &a&n%{_version}%&8) &7Download the newest version at &fhttps://www.mc-market.org/resources/17446/")
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8)." to console
 	send "&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/" to console
