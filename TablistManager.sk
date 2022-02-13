@@ -90,9 +90,9 @@ function TablistManagerPlaceholders(s: string, p: player) :: text:
 	replace all "{World}" with "%{TabM::World::%{_p}%}%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
 	set {_Max} to max player count
-	replace all "{MaxPlayer}" or "MaxPlayers" with "%{_Max}%" in {_s}
+	replace all "{MaxPlayers}" with "%{_Max}%" in {_s}
 	replace all "{BukkitVersion}" with bukkit version in {_s}
-	replace all "{ServerVesion}" with minecraft version in {_s}
+	replace all "{MinecraftVesion}" with minecraft version in {_s}
 	set {_Time} to now formatted as "HH:mm:ss"
 	replace all "{Time}" with "%{_Time}%" in {_s}
 	set {_Date} to now formatted as "d/M/yyyy"
