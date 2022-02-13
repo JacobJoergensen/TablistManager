@@ -130,7 +130,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				send "&c&lREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues"
 				send "&f"
 				send "&c&lTM RELOAD &8➳ &cTablistManager was reloaded!"
-			if arg 1 is "color":	
+			if arg 1 is "setcolor" or "color":	
 				if arg 2 is set:
 					if arg 3 is set:
 						set {_Uuid} to uuid of arg 2
