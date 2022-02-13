@@ -1,26 +1,26 @@
+#Generation
 option nms:
 	get:
 		return 4th element of split "%class of server.getServer()%" by "."
 
 import:
+	ch.njol.skript.Skript
 	java.io.BufferedReader
 	java.io.InputStreamReader
 	java.net.URL
-	ch.njol.skript.Skript
 
-plural expression [the] (text|content[s]) (of|from) [(url|link|[web]site)] %string%:
+plural expression (check) [(version)] %string%:
 	return type: strings
 	get:
-		set {_input} to try new BufferedReader(try new InputStreamReader(try new URL(expr-1).openStream()))
-		set {_q::*} to ...try {_input}.lines()
-		try {_input}.close()
+		set {_link} to try new BufferedReader(try new InputStreamReader(try new URL(expr-1).openStream()))
+		set {_q::*} to ...try {_link}.lines()
+		try {_link}.close()
 		return {_q::*}
 
-#Generation
 on load:
 	loop "skript-reflect", "skript-yaml" and "Vault": 
 		if server.getServer().getPluginManager().getPlugin(loop-value) is not set:
-			Skript.error("&c&lADDON CHECKER &7You are missing the following Skript addons: &c&n%loop-value%")
+			Skript.error("&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager, Missing Addons: &c&n%loop-value%")
 			stop
 	if yaml file "plugins/TablistManager/Config.yml" does not exist:
 		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
@@ -34,11 +34,11 @@ on load:
 		save yml "plugins/TablistManager/Config.yml"
 		send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
 	if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
-		set {_input} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
-		set {_version} to first element of ...{_input}.lines() 
-		{_input}.close()
-		if "%{_version}%" != "0.5":
-			Skript.error("&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&7Current version: &c&n0.5&8) - (&7Latest version: &a&n%{_version}%&8) &7Download the newest version at &fhttps://www.mc-market.org/resources/17446/")
+		set {_link} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
+		set {_version} to first element of ...{_link}.lines() 
+		{_link}.close()
+		if "%{_version}%" is not "0.5":
+			Skript.error("&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.5&8) - (&aLatest version: &a&n%{_version}%&8) &7Download the newest version at &fhttps://www.mc-market.org/resources/17446/")
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8)." to console
 	send "&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/" to console
