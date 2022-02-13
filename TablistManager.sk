@@ -74,7 +74,7 @@ function TablistManagerApi(p: player):
 	if yaml file "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" does not exist:
 		stop
 	else:
-		load yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
+		load yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
 		set {_PlayerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
 		set {_p}'s tab list name to "%{_Prefix}% %{_PlayerColor}%%{_p}'s displayname% %{_Suffix}%"
 
@@ -153,4 +153,3 @@ every 5 seconds:
 	else:
 		loop all players:
 			TablistManagerApi(loop-player)
-
