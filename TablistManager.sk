@@ -29,6 +29,7 @@ on load:
 		set yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml" to "tablistmanager.admin"
 		set yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" to false
 		set yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" to false
+		set yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml" to 5
 		set yaml value "Content.Header" of "plugins/TablistManager/Config.yml" to "&d&lWelcome To My Server {NewLine} &7&oVisit the Config.yml to edit this!"
 		set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "&aHello {player} {NewLine}&e&n Support the server today!"
 		save yml "plugins/TablistManager/Config.yml"
@@ -37,50 +38,60 @@ on load:
 		set {_link} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
 		set {_version} to first element of ...{_link}.lines() 
 		{_link}.close()
-		if "%{_version}%" is not "0.5":
-			Skript.error("&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.5&8) - (&aLatest version: &a&n%{_version}%&8) &7Download the newest version at &fhttps://www.mc-market.org/resources/17446/")
+		if "%{_version}%" is not "0.6":
+			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.6&8) - (&aLatest version: &a&n%{_version}%&8)") 
+			send "&c&lUPDATE CHECKER &fDownload the newest version at &7https://www.mc-market.org/resources/17446/" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8)." to console
 	send "&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/" to console
 	send "&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
 on join:
-	TablistManagerApi(player)
 	set {_Uuid} to uuid of player
-	load yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
+	load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	wait 2 seconds
-	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" is not set:
-		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" to "§7"
-		save yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
+	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set:
+		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7"
+		save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+	while player is online:
+		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+		set {_num} to yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"
+		set {_updateTime} to "%{_num}% seconds" parsed as timespan
+		wait {_updateTime}
+		if yaml file "plugins/TablistManager/Config.yml" does not exist:
+			send "&6&lTABLISTMANAGER &eCould not find Config.yml &8(&cMAJOR ERROR&8)" to console
+			stop
+		else:
+			TablistManagerApi(player)
 
 #Api
 function TablistManagerApi(p: player):
-	set {_Uuid} to uuid of {_p}
+	set {_uuid} to uuid of {_p}
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-	set {_Header} to yaml value "Content.Header" of "plugins/TablistManager/Config.yml"
-	set {_Footer} to yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"
-	set {_HeaderContentBuilder} to TablistManagerPlaceholders("%{_Header}%", {_p})
-	set all players' tab list header to {_HeaderContentBuilder}
-	set {_FooterContentBuilder} to TablistManagerPlaceholders("%{_Footer}%", {_p})
-	set all players' tab list footer to {_FooterContentBuilder}
+	set {_header} to yaml value "Content.Header" of "plugins/TablistManager/Config.yml"
+	set {_footer} to yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"
+	set {_headerContentBuilder} to TablistManagerPlaceholders("%{_header}%", {_p})
+	set all players' tab list header to {_headerContentBuilder}
+	set {_footerContentBuilder} to TablistManagerPlaceholders("%{_footer}%", {_p})
+	set all players' tab list footer to {_footerContentBuilder}
 	if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true:
-		set {_Prefix} to {_p}'s prefix 
-	else: 
-		set {_Prefix} to " "
+		set {_prefix} to {_p}'s prefix 
+	else:
+		set {_prefix} to ""
 	if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true:
-		set {_Suffix} to {_p}'s suffix
-	else: 
-		set {_Suffix} to " "
-	if yaml file "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" does not exist:
+		set {_suffix} to {_p}'s suffix
+	else:
+		set {_suffix} to ""
+	if yaml file "plugins/TablistManager/PlayerData/%{_uuid}%.yml" does not exist:
 		stop
 	else:
-		load yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
-		set {_PlayerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
-		set {_p}'s tab list name to "%{_Prefix}% %{_PlayerColor}%%{_p}'s displayname% %{_Suffix}%"
+		load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+		set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+		set {_p}'s tab list name to "%{_prefix}% %{_playerColor}%%{_p}'s displayname% %{_suffix}%"
 
 #Placeholders
 function TablistManagerPlaceholders(s: string, p: player) :: text:
-	replace all "{NewLine}" with newline in {_s}
+	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "&" with "§" in {_s}
 	replace all "{Player}" with "%{_p}%" in {_s}
 	replace all "{Level}" with "%{_p}'s level%" in {_s}
@@ -89,14 +100,14 @@ function TablistManagerPlaceholders(s: string, p: player) :: text:
 	set {TabM::World::%{_p}%} to world of {_p}
 	replace all "{World}" with "%{TabM::World::%{_p}%}%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
-	set {_Max} to max player count
-	replace all "{MaxPlayers}" with "%{_Max}%" in {_s}
+	set {_max} to max player count
+	replace all "{MaxPlayers}" with "%{_max}%" in {_s}
 	replace all "{BukkitVersion}" with bukkit version in {_s}
 	replace all "{MinecraftVesion}" with minecraft version in {_s}
-	set {_Time} to now formatted as "HH:mm:ss"
-	replace all "{Time}" with "%{_Time}%" in {_s}
-	set {_Date} to now formatted as "d/M/yyyy"
-	replace all "{Date}" with "%{_Date}%" in {_s}
+	set {_time} to now formatted as "HH:mm:ss"
+	replace all "{Time}" with "%{_time}%" in {_s}
+	set {_date} to now formatted as "d/M/yyyy"
+	replace all "{Date}" with "%{_date}%" in {_s}
 	return {_s}
 
 #Commands
@@ -104,9 +115,9 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
 		load yml "plugins/TablistManager/Config.yml"
-		set {_Prefix} to yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml"
-		set {_APermission} to yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"
-		if player has permission "%{_APermission}%":
+		set {_prefix} to yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml"
+		set {_aPermission} to yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"
+		if player has permission "%{_aPermission}%":
 			if arg 1 is not set:
 				TablistManagerApi(player)
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to player
@@ -130,12 +141,12 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				send "&c&lREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues"
 				send "&f"
 				send "&c&lTM RELOAD &8➳ &cTablistManager was reloaded!"
-			if arg 1 is "setcolor" or "color":	
+			if arg 1 is "setcolor" or "changecolor" or "color":	
 				if arg 2 is set:
 					if arg 3 is set:
-						set {_Uuid} to uuid of arg 2
-						set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_Uuid}%.yml" to "§%arg-3%"
-						save yml "plugins/TablistManager/PlayerData/%{_Uuid}%.yml"
+						set {_uuid} to uuid of arg 2
+						set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§%arg-3%"
+						save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 						send action bar "&6You have set tablist color for player §%arg-3%%arg 2%" to player
 					else:
 						send "   &c&lCOMMAND &8/&6Tablist color &8<&eplayer&8> <&ecolor-code&8>"
@@ -144,12 +155,4 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 					send "   &c&lCOMMAND &8/&6Tablist color &8<&eplayer&8> <&ecolor-code&8>"
 					send "      &c&lEXAMPLE &8/&6Tablist color &e%player% &ee"
 		else:
-			send "%{_Prefix}% &cSorry you do not have access to this!"
-
-#Events
-every 5 seconds:
-	if yaml file "plugins/TablistManager/Config.yml" does not exist:
-		stop
-	else:
-		loop all players:
-			TablistManagerApi(loop-player)
+			send "%{_prefix}% &cSorry you do not have access to this!"
