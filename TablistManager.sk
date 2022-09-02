@@ -93,21 +93,25 @@ function TablistManagerApi(p: player):
 function TablistManagerPlaceholders(s: string, p: player) :: text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "&" with "§" in {_s}
-	replace all "{Player}" with "%{_p}%" in {_s}
-	replace all "{Level}" with "%{_p}'s level%" in {_s}
-	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
-	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
+	replace all "{Player}" with {_p} in {_s}
+	replace all "{Level}" with {_p}'s level in {_s}
+	replace all "{PlayerHealth}" with {_p}'s health in {_s}
+	replace all "{MaxPlayerHealth}" with {_p}'s max health in {_s}
 	set {TabM::World::%{_p}%} to world of {_p}
-	replace all "{World}" with "%{TabM::World::%{_p}%}%" in {_s}
-	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
+	replace all "{World}" with {TabM::World::%{_p}%} in {_s}
+	replace all "{Online}" or "{OnlinePlayers}" with number of all players in {_s}
+    	replace all "{CurrentlyOnlinePlayersInWorld}" or "{Copiw}" with amount of all players in world "%{TabM::World::%{_p}%}%" in {_s}
 	set {_max} to max player count
-	replace all "{MaxPlayers}" with "%{_max}%" in {_s}
+	replace all "{MaxPlayers}" with {_max} in {_s}
 	replace all "{BukkitVersion}" with bukkit version in {_s}
-	replace all "{MinecraftVesion}" with minecraft version in {_s}
-	set {_time} to now formatted as "HH:mm:ss"
-	replace all "{Time}" with "%{_time}%" in {_s}
+	replace all "{MinecraftVesion}" or "{McVersion}" with minecraft version in {_s}
+    	replace all "{Ping}" with {_p}'s ping in {_s}
+    	replace all "{Tps}" with tps in {_s}
+	set {_serverTime} to now formatted as "HH:mm:ss"
+	replace all "{ServerTime}" or "{RealTime}" with {_serverTime} in {_s}
 	set {_date} to now formatted as "d/M/yyyy"
 	replace all "{Date}" with "%{_date}%" in {_s}
+    	replace all "{Motd}" with motd in {_s}
 	return {_s}
 
 #Commands
