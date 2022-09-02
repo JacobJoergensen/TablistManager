@@ -47,7 +47,7 @@ on load:
 	send "&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
 on join:
-	set {_Uuid} to uuid of player
+	set {_uuid} to uuid of player
 	load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	wait 2 seconds
 	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set:
