@@ -54,15 +54,16 @@ on join:
 		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7"
 		save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	while player is online:
-		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-		set {_num} to yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"
-		set {_updateTime} to "%{_num}% seconds" parsed as timespan
-		wait {_updateTime}
-		if yaml file "plugins/TablistManager/Config.yml" does not exist:
-			send "&6&lTABLISTMANAGER &eCould not find Config.yml &8(&cMAJOR ERROR&8)" to console
-			stop
-		else:
-			TlmApi(player)
+		if tps is bigger than 10:
+			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+			set {_num} to yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"
+			set {_updateTime} to "%{_num}% seconds" parsed as timespan
+			wait {_updateTime}
+			if yaml file "plugins/TablistManager/Config.yml" does not exist:
+				send "&6&lTABLISTMANAGER &eCould not find Config.yml &8(&cMAJOR ERROR&8)" to console
+				stop
+			else:
+				TlmApi(player)
 
 #Api
 function TlmApi(p: player):
@@ -153,7 +154,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 						set {_uuid} to uuid of arg 2
 						set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§%arg-3%"
 						save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
-						send action bar "&6You have set tablist color for player §%arg-3%%arg 2%" to player
+						send action bar "&6You have set tablist color for player &%arg-3%%arg 2%" to player
 					else:
 						send "   &c&lCOMMAND &8/&6Tablist color &8<&eplayer&8> <&ecolor-code&8>"
 						send "      &c&lEXAMPLE &8/&6Tablist color &e%player% &ee"
