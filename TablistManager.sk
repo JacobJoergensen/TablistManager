@@ -142,11 +142,9 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 			if arg 1 is "reload":
 				play sound "ENTITY_VILLAGER_YES" with volume 2 to player
 				make player execute command "/sk reload TablistManager"
-				send "&f"
 				send "&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!"
 				send "&f"
 				send formatted "<tooltip:&7Click Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&7Click Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
-				send "&f"
 			if arg 1 is "setcolor" or "changecolor" or "color":	
 				if arg 2 and arg 3 is set:
 					if arg 3 is "0", "1", "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "a" or "b" or "c" or "d" or "e" or "f":
