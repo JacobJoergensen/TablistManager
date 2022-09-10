@@ -61,7 +61,6 @@ on join:
 			wait {_updateTime}
 			if yaml file "plugins/TablistManager/Config.yml" does not exist:
 				send "&6&lTABLISTMANAGER &eCould not find Config.yml &8(&cMAJOR ERROR&8)" to console
-				stop
 			else:
 				TlmApi(player)
 
