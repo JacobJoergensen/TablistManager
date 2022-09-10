@@ -38,8 +38,8 @@ on load:
 		set {_link} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
 		set {_version} to first element of ...{_link}.lines() 
 		{_link}.close()
-		if "%{_version}%" is not "0.7":
-			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.7&8) - (&aLatest version: &a&n%{_version}%&8)") 
+		if "%{_version}%" is not "0.8":
+			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.8&8) - (&aLatest version: &a&n%{_version}%&8)") 
 			send "&c&lUPDATE CHECKER &fDownload the newest version at &7https://www.mc-market.org/resources/17446/" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8)." to console
