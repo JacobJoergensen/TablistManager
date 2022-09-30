@@ -55,8 +55,7 @@ on join:
 	while player is online:
 		if tps is bigger than 10:
 			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-			set {_num} to yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"
-			set {_updateTime} to "%{_num}% seconds" parsed as timespan
+			set {_updateTime} to "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			wait {_updateTime}
 			TlmApi(player)
 
@@ -64,10 +63,8 @@ on join:
 function TlmApi(p: player):
 	set {_uuid} to uuid of {_p}
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-	set {_header} to yaml value "Content.Header" of "plugins/TablistManager/Config.yml"
-	set {_footer} to yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"
-	set all players' tab list header to TlmPlaceholders("%{_header}%", {_p})
-	set all players' tab list footer to TlmPlaceholders("%{_footer}%", {_p})
+	set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
+	set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
 	if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true:
 		set {_prefix} to {_p}'s prefix
 	else:
@@ -112,9 +109,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
 		load yml "plugins/TablistManager/Config.yml"
-		set {_prefix} to yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml"
-		set {_aPermission} to yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"
-		if player has permission "%{_aPermission}%":
+		if player has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
 			if arg 1 is not set:
 				TlmApi(player)
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to player
@@ -146,4 +141,4 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				else:
 					send formatted "<tooltip:&cEXAMPLE: &8/&6Tablist color &e%player% &ee>&c&lTry Again.. &8/&6Tablist color &8<&eplayer&8> <&ecolor-code&8><reset>"
 		else:
-			send "%{_prefix}% &cSorry you do not have access to this!"
+			send "%yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml"% &cSorry you do not have access to this!"
