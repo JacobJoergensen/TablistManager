@@ -1,4 +1,4 @@
-#Generation
+# GENERATION
 option nms:
 	get:
 		return 4th element of split "%class of server.getServer()%" by "."
@@ -40,7 +40,7 @@ on load:
 		{_link}.close()
 		if "%{_version}%" is not "0.8":
 			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.8&8) - (&aLatest version: &a&n%{_version}%&8)") 
-			send "&c&lUPDATE CHECKER &fDownload the newest version at &7https://www.mc-market.org/resources/17446/" to console
+			send "&c&lUPDATE CHECKER &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8)." to console
 	send "&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/" to console
@@ -50,46 +50,37 @@ on join:
 	set {_uuid} to uuid of player
 	load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	wait 2 seconds
-	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set:
-		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7"
-		save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+	set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set
+	save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	while player is online:
 		if tps is bigger than 10:
 			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			set {_num} to yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"
 			set {_updateTime} to "%{_num}% seconds" parsed as timespan
 			wait {_updateTime}
-			if yaml file "plugins/TablistManager/Config.yml" does not exist:
-				send "&6&lTABLISTMANAGER &eCould not find Config.yml &8(&cMAJOR ERROR&8)" to console
-			else:
-				TlmApi(player)
+			TlmApi(player)
 
-#Api
+# API
 function TlmApi(p: player):
 	set {_uuid} to uuid of {_p}
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 	set {_header} to yaml value "Content.Header" of "plugins/TablistManager/Config.yml"
 	set {_footer} to yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"
-	set {_headerContentBuilder} to TlmPlaceholders("%{_header}%", {_p})
-	set all players' tab list header to {_headerContentBuilder}
-	set {_footerContentBuilder} to TlmPlaceholders("%{_footer}%", {_p})
-	set all players' tab list footer to {_footerContentBuilder}
+	set all players' tab list header to TlmPlaceholders("%{_header}%", {_p})
+	set all players' tab list footer to TlmPlaceholders("%{_footer}%", {_p})
 	if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true:
-		set {_prefix} to {_p}'s prefix 
+		set {_prefix} to {_p}'s prefix
 	else:
 		set {_prefix} to ""
 	if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true:
 		set {_suffix} to {_p}'s suffix
 	else:
 		set {_suffix} to ""
-	if yaml file "plugins/TablistManager/PlayerData/%{_uuid}%.yml" does not exist:
-		stop
-	else:
-		load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
-		set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
-		set {_p}'s tab list name to "%{_prefix}% %{_playerColor}%%{_p}'s displayname% %{_suffix}%"
+	load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+	set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
+	set {_p}'s tab list name to "%{_prefix}% %{_playerColor}%%{_p}'s displayname% %{_suffix}%"
 
-#Placeholders
+# PLACEHOLDERS
 function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "&" with "§" in {_s}
@@ -116,7 +107,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{Motd}" with motd in {_s}
 	return {_s}
 
-#Commands
+# COMMANDS
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
@@ -139,12 +130,11 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				send "&f"
 				send "&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 			if arg 1 is "reload":
-				play sound "ENTITY_VILLAGER_YES" with volume 2 to player
 				make player execute command "/sk reload TablistManager"
 				send "&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!"
 				send "&f"
 				send formatted "<tooltip:&7Click Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&7Click Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
-			if arg 1 is "setcolor" or "changecolor" or "color":	
+			if arg 1 is "setcolor" or "changecolor" or "color":
 				if arg 2 and arg 3 is set:
 					if arg 3 is "0", "1", "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "a" or "b" or "c" or "d" or "e" or "f":
 						set {_uuid} to uuid of arg 2
