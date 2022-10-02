@@ -47,9 +47,9 @@ on load:
 	send "&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
 on join:
+	wait 1 second
 	set {_uuid} to uuid of player
 	load yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml" as "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
-	wait 2 seconds
 	set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set
 	save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	while player is online:
@@ -108,7 +108,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
-		load yml "plugins/TablistManager/Config.yml"
+		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 		if player has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
 			if arg 1 is not set:
 				TlmApi(player)
