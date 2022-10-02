@@ -1,8 +1,4 @@
 # GENERATION
-option nms:
-	get:
-		return 4th element of split "%class of server.getServer()%" by "."
-
 import:
 	ch.njol.skript.Skript
 	java.io.BufferedReader
