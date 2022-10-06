@@ -34,9 +34,8 @@ on load:
 		set {_link} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
 		set {_version} to first element of ...{_link}.lines()
 		{_link}.close()
-		if "%{_version}%" is not "0.8":
-			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.8&8) - (&aLatest version: &a&n%{_version}%&8)")
-			send "&c&lUPDATE CHECKER &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
+		if "%{_version}%" is not "0.9":
+			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.9&8) - (&aLatest version: &a&n%{_version}%&8)%nl%&c&lUPDATE CHECKER &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases")
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
@@ -47,7 +46,7 @@ on join:
 	set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" to "§7" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%{_uuid}%.yml" is not set
 	save yml "plugins/TablistManager/PlayerData/%{_uuid}%.yml"
 	while player is online:
-		if tps is bigger than 10:
+		if tps is bigger than 12:
 			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			set {_updateTime} to "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			wait {_updateTime}
