@@ -72,6 +72,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "&" with "§" in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
 	replace all "{Level}" with "%{_p}'s level%" in {_s}
+	#replace all "{LevelProgress}" with "%{_p}'s level progress%" in {_s}
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
@@ -91,10 +92,8 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{MinecraftVesion}" or "{McVersion}" with minecraft version in {_s}
 	replace all "{Ping}" with "%{_p}'s ping%" in {_s}
 	replace all "{Tps}" with "%tps%" in {_s}
-	set {_serverTime} to now formatted as "HH:mm:ss"
-	replace all "{ServerTime}" or "{RealTime}" with "%{_serverTime}%" in {_s}
-	set {_date} to now formatted as "d/M/yyyy"
-	replace all "{Date}" with "%{_date}%" in {_s}
+	replace all "{ServerTime}" or "{RealTime}" with now formatted as "HH:mm:ss" in {_s}
+	replace all "{Date}" with now formatted as "d/M/yyyy" in {_s}
 	replace all "{Motd}" with motd in {_s}
 	return {_s}
 
