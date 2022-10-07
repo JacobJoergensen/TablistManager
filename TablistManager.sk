@@ -1,6 +1,5 @@
 # GENERATION
 import:
-	ch.njol.skript.Skript
 	java.io.BufferedReader
 	java.io.InputStreamReader
 	java.net.URL
@@ -16,7 +15,7 @@ plural expression (check) [(version)] %string%:
 on load:
 	loop "skript-reflect", "skript-yaml" and "Vault":
 		if server.getServer().getPluginManager().getPlugin(loop-value) is not set:
-			Skript.error("&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager, Missing Addons: &c&n%loop-value%")
+			send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager, Missing Addons: &c&n%loop-value%" to console
 			stop
 	if yaml file "plugins/TablistManager/Config.yml" does not exist:
 		set yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml" to "&6&lSERVER"
@@ -35,7 +34,7 @@ on load:
 		set {_version} to first element of ...{_link}.lines()
 		{_link}.close()
 		if "%{_version}%" is not "0.9":
-			Skript.error("%nl% &c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c&n0.9&8) - (&aLatest version: &a&n%{_version}%&8)%nl%&fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases")
+			send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c0.9&8) - (&aLatest version: &a%{_version}%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
@@ -46,20 +45,17 @@ on join:
 	save yml "plugins/TablistManager/PlayerData/%uuid of player%.yml"
 	while player is online:
 		if tps is bigger than 12:
-			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			TlmApi(player)
 
 # API
 function TlmApi(p: player):
-	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 	set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
 	set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
 	set {_prefix} to {_p}'s prefix if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true
 	set {_prefix} to "" if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is false
 	set {_suffix} to {_p}'s suffix if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true
 	set {_suffix} to "" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is false
-	load yml "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" as "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml"
 	set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" is set
 	set {_p}'s tab list name to "%{_prefix}% %{_playerColor}%%{_p}'s displayname% %{_suffix}%"
 
@@ -69,7 +65,6 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "&" with "§" in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
 	replace all "{Level}" with "%{_p}'s level%" in {_s}
-	#replace all "{LevelProgress}" with "%{_p}'s level progress%" in {_s}
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
@@ -98,7 +93,6 @@ function TlmPlaceholders(s: string, p: player) :: text:
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
-		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 		if player has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
 			if arg 1 is not set:
 				TlmApi(player)
@@ -111,10 +105,13 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				make player execute command "/sk reload TablistManager.sk"
 				send formatted "&f%nl%&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!%nl%&f%nl%<tooltip:&fClick Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&fClick Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
 			if arg 1 is "setcolor" or "changecolor" or "color":
-				if arg 2 and arg 3 is "0", "1", "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "a" or "b" or "c" or "d" or "e" or "f":
-					set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of arg 2%.yml" to "§%arg-3%"
-					save yml "plugins/TablistManager/PlayerData/%uuid of arg 2%.yml"
-					send action bar "&aYou have changed the tablist color for &%arg-3%%arg 2%" to player
+				if arg 2 is offline player:
+					if arg 3 is "0", "1", "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "a" or "b" or "c" or "d" or "e" or "f":
+						set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of arg 2%.yml" to "§%arg-3%"
+						save yml "plugins/TablistManager/PlayerData/%uuid of arg 2%.yml"
+						send action bar "&aYou have changed the tablist color for &%arg-3%%arg 2%" to player
+					else:
+						send formatted "<tooltip:&cEXAMPLE: &8/&6Tablist color &e%player% &ee>&c&lTry Again.. &8/&6Tablist color &8<&eplayer&8><reset> <tooltip:&9Minecraft Color Codes: &00&8, &11&8, &22&8, &33&8, &44&8, &55&8, &66&8, &77&8, &88&8, &99&8, &aa&8, &bb&8, &cc&8, &dd&8, &ee&8, &ff>&8<&ecolor-code&8><reset>"
 				else:
 					send formatted "<tooltip:&cEXAMPLE: &8/&6Tablist color &e%player% &ee>&c&lTry Again.. &8/&6Tablist color &8<&eplayer&8><reset> <tooltip:&9Minecraft Color Codes: &00&8, &11&8, &22&8, &33&8, &44&8, &55&8, &66&8, &77&8, &88&8, &99&8, &aa&8, &bb&8, &cc&8, &dd&8, &ee&8, &ff>&8<&ecolor-code&8><reset>"
 		else:
