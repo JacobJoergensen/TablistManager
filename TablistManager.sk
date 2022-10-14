@@ -1,10 +1,10 @@
 # GENERATION
 import:
+	java.net.URL
 	java.io.BufferedReader
 	java.io.InputStreamReader
-	java.net.URL
 
-plural expression (check) [(version)] %string%:
+plural expression [get] (version) [(url)] %string%:
 	return type: strings
 	get:
 		set {_link} to try new BufferedReader(try new InputStreamReader(try new URL(expr-1).openStream()))
@@ -30,11 +30,8 @@ on load:
 		save yml "plugins/TablistManager/Config.yml"
 		send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
 	if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
-		set {_link} to new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt").openStream()))
-		set {_version} to first element of ...{_link}.lines()
-		{_link}.close()
-		if "%{_version}%" is not "0.9":
-			send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c0.9&8) - (&aLatest version: &a%{_version}%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
+		if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "0.9":
+			send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c0.9&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
@@ -43,13 +40,14 @@ on join:
 	load yml "plugins/TablistManager/PlayerData/%uuid of player%.yml" as "plugins/TablistManager/PlayerData/%uuid of player%.yml"
 	set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" to "§7" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" is not set
 	save yml "plugins/TablistManager/PlayerData/%uuid of player%.yml"
+	# TABLIST UPDATER
 	while player is online:
 		if tps is bigger than 12:
 			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			TlmApi(player)
 
-# API
+# TABLIST HANDLER
 function TlmApi(p: player):
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 	set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
@@ -70,18 +68,14 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
-	set {_coordinate} to location of {_p}
-	replace all "{Coordinate}" or "{Location}" with "%{_coordinate}%" in {_s}
+	replace all "{Coordinate}" or "{Location}" with "%{_p}'s location%" in {_s}
 	replace all "{Gamemode}" with "%{_p}'s gamemode%" in {_s}
 	replace all "{LightLevel}" with "%light level at {_p}%" in {_s}
 	replace all "{IpAddress}" with ip of {_p} in {_s}
 	replace all "{TimePlayed}" with "%time played of {_p}%" in {_s}
-	set {_world} to world of {_p}
-	replace all "{World}" with "%{_world}%" in {_s}
-	set {_worldTime} to time in world "%{_world}%"
-	replace all "{WorldTime}" with "%{_worldTime}%" in {_s}
-	set {_worldPlayers} to amount of all players in world "%{_world}%"
-	replace all "{OnlinePlayersInWorld}" or "{Opiw}" with "%{_worldPlayers}%" in {_s}
+	replace all "{World}" with "%{_p}'s world%" in {_s}
+	replace all "{WorldTime}" with "%time in world ""%{_p}'s world%""%" in {_s}
+	replace all "{OnlinePlayersInWorld}" or "{Opiw}" with "%amount of all players in world ""%{_p}'s world%""%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
 	replace all "{BukkitVersion}" with bukkit version in {_s}
