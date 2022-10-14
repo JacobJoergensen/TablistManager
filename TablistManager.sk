@@ -62,7 +62,6 @@ function TlmApi(p: player):
 # PLACEHOLDERS
 function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
-	replace all "&" with "§" in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
 	replace all "{Level}" with "%{_p}'s level%" in {_s}
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
