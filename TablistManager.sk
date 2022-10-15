@@ -31,7 +31,7 @@ on load:
 		send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
 	if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
 		if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "0.9":
-			send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c0.9&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases" to console
+			send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c0.9&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases/latest" to console
 			stop
 	send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 
