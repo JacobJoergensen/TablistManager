@@ -1,8 +1,8 @@
 <h1 align="center">TablistManager</h1>
 
-Wiki: https://jacobjoergensen2.gitbook.io/tablistmanager/
+* Wiki: https://jacobjoergensen2.gitbook.io/tablistmanager/
 
-Bug Report & Ideas: https://github.com/JacobJoergensen/TablistManager/issues
+* Bug Report & Ideas: https://github.com/JacobJoergensen/TablistManager/issues
 
 <h1 align="center">Images</h1>
 
