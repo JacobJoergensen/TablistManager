@@ -38,7 +38,8 @@ on load:
 on join:
 	wait 1 second
 	load yml "plugins/TablistManager/PlayerData/%uuid of player%.yml" as "plugins/TablistManager/PlayerData/%uuid of player%.yml"
-	set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" to "§7" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" is not set
+	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" is not set:
+		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" to "§7"
 	save yml "plugins/TablistManager/PlayerData/%uuid of player%.yml"
 	# TABLIST UPDATER
 	while player is online:
@@ -56,7 +57,8 @@ function TlmApi(p: player):
 	set {_prefix} to "" if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is false
 	set {_suffix} to {_p}'s suffix if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true
 	set {_suffix} to "" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is false
-	set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" is set
+	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml" is set:
+		set {_playerColor} to yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of {_p}%.yml"
 	set {_p}'s tab list name to "%{_prefix}% %{_playerColor}%%{_p}'s displayname% %{_suffix}%"
 
 # PLACEHOLDERS
