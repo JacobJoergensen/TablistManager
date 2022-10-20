@@ -40,7 +40,7 @@ on join:
 	load yml "plugins/TablistManager/PlayerData/%uuid of player%.yml" as "plugins/TablistManager/PlayerData/%uuid of player%.yml"
 	if yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" is not set:
 		set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of player%.yml" to "§7"
-	save yml "plugins/TablistManager/PlayerData/%uuid of player%.yml"
+		save yml "plugins/TablistManager/PlayerData/%uuid of player%.yml"
 	# TABLIST UPDATER
 	while player is online:
 		if tps is bigger than 12:
