@@ -14,7 +14,6 @@ plural expression [get] (version) [(url)] %string%:
 
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
-		#send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager, Missing Addons: &c&n%loop-value%" to console
 		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 		if yaml "plugins/TablistManager/Config.yml" is empty:
 			set yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml" to "&6&lSERVER"
@@ -63,6 +62,7 @@ function TlmApi(p: player):
 function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
+	replace all "{PlayerDisplayName}" with {_p}'s displayname in {_s}
 	replace all "{Level}" with "%{_p}'s level%" in {_s}
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
