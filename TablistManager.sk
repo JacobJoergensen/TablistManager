@@ -40,10 +40,10 @@ on join:
 			# TABLIST UPDATER
 			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
-			TlmApi(player)
+			TlmHandler(player)
 
 # TABLIST HANDLER
-function TlmApi(p: player):
+function TlmHandler(p: player):
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 	set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
 	set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
@@ -85,14 +85,8 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{Date}" with now formatted as "d/M/yyyy" in {_s}
 	replace all "{Motd}" with motd in {_s}
 	parse if plugin "CMI" or "Essentials" is enabled:
-		replace all "{Money}" with "%{_p}s balance%" in {_s}
+		replace all "{Money}" with "%{_p}'s balance%" in {_s}
 	return {_s}
-
-function TlmUpdateTab(p: player):
-	TlmApi({_p})
-	send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_p}
-	play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_p}
-	send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds
 
 # COMMANDS
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
@@ -100,10 +94,15 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	trigger:
 		if player has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
 			if arg 1 is not set:
-				TlmUpdateTab(player)
+				TlmHandler(player)
+				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to player for 2 seconds
+				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to player
+				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to player
 			if arg 1 is "update":
 				if arg 2 is offline player:
-					TlmUpdateTab(arg 2)
+					TlmHandler(arg 2)
+					send action bar "&eYou updated %arg 2% tablist!" to player
+					play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to arg 2 and player
 			if arg 1 is "help" or "info":
 				send formatted "&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablistmanager> &8➳ &e/Tablist &8, &7Update the Tablist manually.%nl% &8➳ &e/Tablist help &8, &7Shows this message.%nl%<tooltip:&9Minecraft Color Codes: &00&8, &11&8, &22&8, &33&8, &44&8, &55&8, &66&8, &77&8, &88&8, &99&8, &aa&8, &bb&8, &cc&8, &dd&8, &ee&8, &ff > &8➳ &e/Tablist color &8<&eplayer&8> <&ecolor-code&8> , &7Change a players tab color in the Tablist.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablistmanager reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 			if arg 1 is "reload":
