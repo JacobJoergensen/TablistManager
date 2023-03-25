@@ -22,8 +22,8 @@ on load:
 			set yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" to false
 			set yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" to false
 			set yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml" to 5
-			set yaml value "Content.Header" of "plugins/TablistManager/Config.yml" to "&d&lWelcome to my server {NewLine} &7&oVisit the Config.yml to edit this!"
-			set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "&aHello {player} {nl}&e&n Support the server today!&r"
+			set yaml value "Content.Header" of "plugins/TablistManager/Config.yml" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
+			set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
 			save yml "plugins/TablistManager/Config.yml"
 			send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
 		if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
