@@ -26,25 +26,38 @@ on load:
 			set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
 			save yml "plugins/TablistManager/Config.yml"
 			send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
-		if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
-			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "1.2":
-				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c1.2&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases/latest" to console
-				stop
 		send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
 		send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager: skript-reflect, skript-yaml and Vault" to console
 
 on join:
+	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+	if player is op or has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
+		if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
+			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "1.2":
+				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager %nl% &8(&cCurrent version: &c1.2&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% &fDownload the newest version at &7https://github.com/JacobJoergensen/TablistManager/releases/latest" to console
+				stop
 	while player is online:
 		if tps is bigger than 12:
 			# TABLIST UPDATER
-			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+			#load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			TlmHandler(player)
+
+on gamemode change:
+	if player's gamemode is spectator:
+		hide player from all players
+	if player's gamemode is not spectator:
+		reveal player from all players
 
 # TABLIST HANDLER
 function TlmHandler(p: player):
 	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+	if yaml value "Settings.BlacklistedWorlds" of "plugins/TablistManager/Config.yml" is true:
+		set {_worlds::*} to yaml value list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml"
+		loop {_worlds::*}:
+			if {_p} is in world "%loop-value%":
+				stop
 	set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
 	set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
 	set {_prefix} to {_p}'s prefix if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true
@@ -107,7 +120,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 			if arg 1 is "reload":
 				make player execute command "/sk reload TablistManager.sk"
 				send formatted "&f%nl%&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!%nl%&f%nl%<tooltip:&fClick Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&fClick Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
-			if arg 1 is "setcolor" or "changecolor" or "color":
+			if arg 1 is "set" or "setcolor" or "changecolor" or "color":
 				if arg 2 is offline player:
 					if arg 3 is "0", "1", "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "a" or "b" or "c" or "d" or "e" or "f":
 						set yaml value "Data.Color" of "plugins/TablistManager/PlayerData/%uuid of arg 2%.yml" to "§%arg-3%"
