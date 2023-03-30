@@ -22,8 +22,10 @@ on load:
 			set yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" to false
 			set yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" to false
 			set yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml" to 5
+			set yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml" to 12
+			set yaml value "Settings.Spectator_Hide" of "plugins/TablistManager/Config.yml" to true
 			set yaml value "Blacklisted.Enabled" of "plugins/TablistManager/Config.yml" to false
-			set yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml" to "test-world" and "blacklisted-world" #{_worlds::*}
+			set yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml" to "test-world" and "blacklisted-world"
 			set yaml value "Content.Header" of "plugins/TablistManager/Config.yml" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
 			set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
 			save yml "plugins/TablistManager/Config.yml"
@@ -38,17 +40,19 @@ on join:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "1.2":
 				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c1.2&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	while player is online:
-		if tps is bigger than 12:
+		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+		set {_tps} to yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml" parsed as number
+		if tps is bigger than {_tps}:
 			# TABLIST UPDATER
-			load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
 			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
 			TlmHandler(player, world of player)
 
 on gamemode change:
-	if player's gamemode is spectator:
-		hide player from all players
-	if player's gamemode is not spectator:
-		reveal player from all players
+	if yaml value "Settings.Spectator_Hide" of "plugins/TablistManager/Config.yml" is true:
+		if player's gamemode is spectator:
+			hide player from all players
+		if player's gamemode is not spectator:
+			reveal player from all players
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
@@ -61,7 +65,6 @@ function TlmHandler(p: player, w: world):
 				reset players' tab list header
 				reset players' tab list footer
 	if {_access} is not false:
-		#if metadata value "TabListManager.Toggle" of {_p} is not true:
 		set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
 		set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
 		set {_prefix} to {_p}'s prefix if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true
