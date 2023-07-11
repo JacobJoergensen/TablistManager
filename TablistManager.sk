@@ -40,12 +40,7 @@ on join:
 		if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
 				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
-	while player is online:
-		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-		if tps is bigger than "%yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml"%" parsed as number: #new
-			# TABLIST UPDATER
-			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
-			TlmHandler(player, world of player)
+	TlmHandler(player, world of player)
 
 on gamemode change: #new
 	if yaml value "Settings.Spectator_Hide" of "plugins/TablistManager/Config.yml" is true: #new
@@ -54,37 +49,40 @@ on gamemode change: #new
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
-	load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-	if yaml value "Blacklisted.Enabled" of "plugins/TablistManager/Config.yml" is true: #new
-		loop yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml": #new
-			if "%loop-val%" parsed as world = {_w}: #new
-				set {_access} to false #new
-				reset players' tab list header #new
-				reset players' tab list footer #new
-				set {_p}'s tab list name to "&7%{_p}'s displayname%" #new
-	if {_access} is not false: #new
-		set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
-		set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
-		load yml "plugins/TablistManager/Players.yml" as "plugins/TablistManager/Players.yml" #new
-		if yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" is not set: #new
-			set yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" to "§7%{_p}%" #new
-			save yml "plugins/TablistManager/Players.yml" #new
+	while {_p} is online:
+		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
+		if tps is bigger than "%yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml"%" parsed as number:
+			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
+			if yaml value "Blacklisted.Enabled" of "plugins/TablistManager/Config.yml" is true: #new
+				loop yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml": #new
+					if "%loop-val%" parsed as world = {_w}: #new
+						set {_access} to false #new
+						reset players' tab list header #new
+						reset players' tab list footer #new
+						set {_p}'s tab list name to "&7%{_p}'s displayname%" #new
+			if {_access} is not false: #new
+				set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
+				set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
+				load yml "plugins/TablistManager/Players.yml" as "plugins/TablistManager/Players.yml" #new
+				if yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" is not set: #new
+					set yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" to "§7%{_p}%" #new
+					save yml "plugins/TablistManager/Players.yml" #new
 
-		set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true #new
-		set {_prefix} to "" if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is false #new
-		set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true #new
-		set {_suffix} to "" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is false #new
+				set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true #new
+				set {_prefix} to "" if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is false #new
+				set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true #new
+				set {_suffix} to "" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is false #new
 
-		set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" #new
-		set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%" #new
+				set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" #new
+				set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%" #new
 
-		if "Settings.PerWorld_Tablist" of "plugins/TablistManager/Config.yml" is true: #new
-			hide {_p} from all players #new
-			reveal {_p} from all players in {_p}'s world #new
+				if yaml value "Settings.PerWorld_Tablist" of "plugins/TablistManager/Config.yml" is true: #new
+					hide {_p} from all players #new
+					reveal {_p} from all players in {_p}'s world #new
 
-			#hide player from all players
-			#hide all players from player
-			#reveal player for all players in players world
+					#hide player from all players
+					#hide all players from player
+					#reveal player for all players in players world
 
 # PLACEHOLDERS
 function TlmPlaceholders(s: string, p: player) :: text:
@@ -101,8 +99,10 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{IpAddress}" with ip of {_p} in {_s}
 	replace all "{TimePlayed}" with "%time played of {_p}%" in {_s}
 	replace all "{World}" with "%{_p}'s world%" in {_s}
-	replace all "{WorldTime}" with "%time in world ""%{_p}'s world%""%" in {_s}
-	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%amount of all players in world ""%{_p}'s world%""%" in {_s} #new
+	set {_worldTime} to time in world "%{_p}'s world%"
+	replace all "{WorldTime}" or "{WTime}" with "%{_worldTime}%" in {_s}
+	set {_onlinePlayersWorld} to amount of all players in world "%{_p}'s world%"
+	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s} #new
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
 	replace all "{StaffOnline}" or "{OnlineStaff}" with "%number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
