@@ -14,22 +14,22 @@ plural expression [get] (version) [(url)] %string%:
 
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
-		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-		if yaml "plugins/TablistManager/Config.yml" is empty:
-			set yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml" to "&6&lSERVER"
-			set yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" to true
-			set yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml" to "tablistmanager.admin"
-			set yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" to false
-			set yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" to false
-			set yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml" to 5
-			set yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml" to 12 #new
-			set yaml value "Settings.PerWorld_Tablist" of "plugins/TablistManager/Config.yml" to false #new
-			set yaml value "Settings.Spectator_Hide" of "plugins/TablistManager/Config.yml" to true #new
-			set yaml value "Blacklisted.Enabled" of "plugins/TablistManager/Config.yml" to false #new
-			set yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml" to "test-world" and "blacklisted-world" #new
-			set yaml value "Content.Header" of "plugins/TablistManager/Config.yml" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
-			set yaml value "Content.Footer" of "plugins/TablistManager/Config.yml" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
-			save yml "plugins/TablistManager/Config.yml"
+		load yml "plugins/TablistManager/Config.yml" as "config"
+		if yaml "config" is empty:
+			set yaml value "Settings.Server_Prefix" of "config" to "&6&lSERVER"
+			set yaml value "Settings.Update_Checker" of "config" to true
+			set yaml value "Settings.Admin_Permission" of "config" to "tablistmanager.admin"
+			set yaml value "Settings.Prefix" of "config" to false
+			set yaml value "Settings.Suffix" of "config" to false
+			set yaml value "Settings.Update_Time" of "config" to 5
+			set yaml value "Settings.Tps_Performance_Value" of "config" to 12
+			set yaml value "Settings.PerWorld_Tablist" of "config" to false
+			set yaml value "Settings.Spectator_Hide" of "config" to true
+			set yaml value "Blacklisted.Enabled" of "config" to false
+			set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
+			set yaml value "Content.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
+			set yaml value "Content.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
+			save yml "config"
 			send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
 		send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
@@ -37,46 +37,46 @@ on load:
 
 on join:
 	if player is op:
-		if yaml value "Settings.Update_Checker" of "plugins/TablistManager/Config.yml" is true:
+		if yaml value "Settings.Update_Checker" of "config" is true:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
 				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	TlmHandler(player, world of player)
 
-on gamemode change: #new
-	if yaml value "Settings.Spectator_Hide" of "plugins/TablistManager/Config.yml" is true: #new
-		hide player from all players if player's gamemode is spectator #new
-		reveal player to all players if player's gamemode is not spectator #new
+on gamemode change:
+	if yaml value "Settings.Spectator_Hide" of "config" is true:
+		hide player from all players if player's gamemode is spectator
+		reveal player to all players if player's gamemode is not spectator
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
 	while {_p} is online:
-		load yml "plugins/TablistManager/Config.yml" as "plugins/TablistManager/Config.yml"
-		if tps is bigger than "%yaml value "Settings.Tps_Performance_Value" of "plugins/TablistManager/Config.yml"%" parsed as number:
-			wait "%yaml value "Settings.Update_Time" of "plugins/TablistManager/Config.yml"% seconds" parsed as timespan
-			if yaml value "Blacklisted.Enabled" of "plugins/TablistManager/Config.yml" is true: #new
-				loop yaml list "Blacklisted.Worlds" of "plugins/TablistManager/Config.yml": #new
-					if "%loop-val%" parsed as world = {_w}: #new
-						set {_access} to false #new
-						reset players' tab list header #new
-						reset players' tab list footer #new
-						set {_p}'s tab list name to "&7%{_p}'s displayname%" #new
-			if {_access} is not false: #new
-				set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "plugins/TablistManager/Config.yml"%", {_p})
-				set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "plugins/TablistManager/Config.yml"%", {_p})
-				load yml "plugins/TablistManager/Players.yml" as "plugins/TablistManager/Players.yml" #new
-				if yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" is not set: #new
-					set yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" to "§7%{_p}%" #new
-					save yml "plugins/TablistManager/Players.yml" #new
+		load yml "plugins/TablistManager/Config.yml" as "config"
+		if tps is bigger than "%yaml value "Settings.Tps_Performance_Value" of "config"%" parsed as number:
+			wait "%yaml value "Settings.Update_Time" of "config"% seconds" parsed as timespan
+			if yaml value "Blacklisted.Enabled" of "config" is true:
+				loop yaml list "Blacklisted.Worlds" of "config":
+					if "%loop-val%" parsed as world = {_w}:
+						set {_access} to false
+						reset players' tab list header
+						reset players' tab list footer
+						set {_p}'s tab list name to "&7%{_p}'s displayname%"
+			if {_access} is not false:
+				set all players' tab list header to TlmPlaceholders("%yaml value "Content.Header" of "config"%", {_p})
+				set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "config"%", {_p})
+				load yml "plugins/TablistManager/Players.yml" as "players"
+				if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
+					set yaml value "%uuid of {_p}%.tabname" of "players" to "§7%{_p}%"
+					save yml "players"
 
-				set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is true #new
-				set {_prefix} to "" if yaml value "Settings.Prefix" of "plugins/TablistManager/Config.yml" is false #new
-				set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is true #new
-				set {_suffix} to "" if yaml value "Settings.Suffix" of "plugins/TablistManager/Config.yml" is false #new
+				set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Prefix" of "config" is true
+				set {_prefix} to "" if yaml value "Settings.Prefix" of "config" is false
+				set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Suffix" of "config" is true
+				set {_suffix} to "" if yaml value "Settings.Suffix" of "config" is false
 
-				set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "plugins/TablistManager/Players.yml" #new
-				set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%" #new
+				set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
+				set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
 
-				if yaml value "Settings.PerWorld_Tablist" of "plugins/TablistManager/Config.yml" is true: #new
+				if yaml value "Settings.PerWorld_Tablist" of "config" is true: #new
 					hide {_p} from all players #new
 					reveal {_p} from all players in {_p}'s world #new
 
@@ -102,7 +102,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	set {_worldTime} to time in world "%{_p}'s world%"
 	replace all "{WorldTime}" or "{WTime}" with "%{_worldTime}%" in {_s}
 	set {_onlinePlayersWorld} to amount of all players in world "%{_p}'s world%"
-	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s} #new
+	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
 	replace all "{StaffOnline}" or "{OnlineStaff}" with "%number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
@@ -121,27 +121,31 @@ function TlmPlaceholders(s: string, p: player) :: text:
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
 	trigger:
-		if player has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%":
-			execute player command "/tablist" if arg 1 is "help" #new
+		if player has permission "%yaml value "Settings.Admin_Permission" of "config"%":
+			execute player command "/tablist" if arg 1 is "help"
 			if arg 1 is not set:
-				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablistmanager> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt: /tablistmanager update> &8➳ &e/Tablist update <tooltip:&bExample: &7%player%>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<sgt:/tablistmanager tabname %player% &&7%player%> &8➳ &e/Tablist tabname <tooltip:&bExample: &7%player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%player%>&8<&etabname&8> <reset>&8, &7Change players tabname in the Tablist.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablistmanager reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{Money} &8➳ &cRequire Essentials or CMI >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
+				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%player%>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<sgt:/tablist tabname %player% &&7%player%> &8➳ &e/Tablist tabname <tooltip:&bExample: &7%player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%player%>&8<&etabname&8> <reset>&8, &7Change players tabname in the Tablist.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{Money} &8➳ &cRequire Essentials or CMI >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
 			if arg 1 is "reload":
 				make player execute command "/sk reload TablistManager.sk"
 				send formatted "&f%nl%&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!%nl%&f%nl%<tooltip:&fClick Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&fClick Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
-			set {_player} to arg 2 if arg 2 is set #new
-			set {_player} to player if arg 2 is not set #new
-			if {_player} is set: #new
-				if arg 1 is "update":
-					TlmHandler({_player}, world of {_player})
-					play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
-					send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "plugins/TablistManager/Config.yml"%"
-					send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_player}
-				if arg 1 is "tabname": #new
-					set {_value} to arg 3 #new
-					set {_value} to "&7%{_player}%" if {_value} is "reset" or "default" #new
-					set yaml value "%uuid of {_player}%.tabname" of "plugins/TablistManager/Players.yml" to "%{_value}%" #new
-					save yml "plugins/TablistManager/Players.yml" #new
-					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_player}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_player}%><sgt: /tablistmanager tabname %{_player}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player #new
-					play sound "block.anvil.use" with volume 2 to {_player} #new
+
+			set {_player} to arg 2 if arg 2 is set
+			set {_player} to player if arg 2 is not set
+
+			if arg 1 is "update":
+				TlmHandler({_player}, world of {_player})
+				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
+				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
+				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_player}
+			if arg 1 is "tabname":
+				if arg 3 is set:
+					set {_value} to arg 3
+					set {_value} to "&7%{_player}%" if {_value} is "reset" or "default"
+					set yaml value "%uuid of {_player}%.tabname" of "players" to "%{_value}%"
+					save yml "players"
+					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_player}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_player}%><sgt:/tablist tabname %{_player}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
+					play sound "block.anvil.use" with volume 2 to {_player}
+				else:
+					send formatted "%yaml value "Settings.Server_Prefix" of "config"% <tooltip:&b&oClick here to try again><sgt:/tablist tabname %{_player}%>&cYou must enter your new tab name!<reset>"
 		else:
-			send "%yaml value "Settings.Server_Prefix" of "plugins/TablistManager/Config.yml"% &cSorry you do not have access to this!"
+			send "%yaml value "Settings.Server_Prefix" of "config"% &cSorry you do not have access to this!"
