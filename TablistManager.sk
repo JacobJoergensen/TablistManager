@@ -1,13 +1,13 @@
 # GENERATION
 import:
-	java.net.URL
-	java.io.BufferedReader
-	java.io.InputStreamReader
+	java.net.URL as url
+	java.io.BufferedReader as reader
+	java.io.InputStreamReader as input
 
 plural expression [get] (version) [(url)] %string%:
 	return type: strings
 	get:
-		set {_link} to try new BufferedReader(try new InputStreamReader(try new URL(expr-1).openStream()))
+		set {_link} to try new reader(try new input(try new url(expr-1).openStream()))
 		set {_q::*} to ...try {_link}.lines()
 		try {_link}.close()
 		return {_q::*}
@@ -23,8 +23,8 @@ on load:
 			set yaml value "Settings.Suffix" of "config" to false
 			set yaml value "Settings.Update_Time" of "config" to 5
 			set yaml value "Settings.Tps_Performance_Value" of "config" to 12
-			set yaml value "Settings.PerWorld_Tablist" of "config" to false
 			set yaml value "Settings.Spectator_Hide" of "config" to true
+			set yaml value "Settings.Default_Tabname_Color" of "config" to "&7"
 			set yaml value "Blacklisted.Enabled" of "config" to false
 			set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
 			set yaml value "Content.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
@@ -36,7 +36,7 @@ on load:
 		send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager: skript-reflect, skript-yaml and Vault" to console
 
 on join:
-	if player is op:
+	if player is operator:
 		if yaml value "Settings.Update_Checker" of "config" is true:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
 				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
@@ -65,7 +65,7 @@ function TlmHandler(p: player, w: world):
 				set all players' tab list footer to TlmPlaceholders("%yaml value "Content.Footer" of "config"%", {_p})
 				load yml "plugins/TablistManager/Players.yml" as "players"
 				if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
-					set yaml value "%uuid of {_p}%.tabname" of "players" to "§7%{_p}%"
+					set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Default_Tabname_Color" of "config"%%{_p}%"
 					save yml "players"
 
 				set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Prefix" of "config" is true
@@ -75,14 +75,6 @@ function TlmHandler(p: player, w: world):
 
 				set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
 				set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
-
-				if yaml value "Settings.PerWorld_Tablist" of "config" is true: #new
-					hide {_p} from all players #new
-					reveal {_p} from all players in {_p}'s world #new
-
-					#hide player from all players
-					#hide all players from player
-					#reveal player for all players in players world
 
 # PLACEHOLDERS
 function TlmPlaceholders(s: string, p: player) :: text:
@@ -124,7 +116,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 		if player has permission "%yaml value "Settings.Admin_Permission" of "config"%":
 			execute player command "/tablist" if arg 1 is "help"
 			if arg 1 is not set:
-				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%player%>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<sgt:/tablist tabname %player% &&7%player%> &8➳ &e/Tablist tabname <tooltip:&bExample: &7%player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%player%>&8<&etabname&8> <reset>&8, &7Change players tabname in the Tablist.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{Money} &8➳ &cRequire Essentials or CMI >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablist Help&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
+				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablistManager&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%player%>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<sgt:/tablist tabname %player% &&7%player%> &8➳ &e/Tablist tabname <tooltip:&bExample: &7%player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%player%>&8<&etabname&8> <reset>&8, &7Change players tabname in the Tablist.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{Money} &8➳ &cRequire Essentials or CMI >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablistManager&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
 			if arg 1 is "reload":
 				make player execute command "/sk reload TablistManager.sk"
 				send formatted "&f%nl%&c&lTLM RELOAD &8➳ &aTablistManager was reloaded!%nl%&f%nl%<tooltip:&fClick Here To Visit Wiki><link:https://jacobjoergensen2.gitbook.io/tablistmanager/>&bVisit WIKI <reset>&8| <tooltip:&fClick Here To Report Bugs And Suggest Ideas><link:https://github.com/JacobJoergensen/TablistManager/issues>&bVisit REPORT BUGS & IDEAS<reset>"
