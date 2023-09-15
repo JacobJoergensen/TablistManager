@@ -30,8 +30,8 @@ on load:
 			set yaml value "Tablist.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
 			set yaml value "Tablist.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
 			save yml "config"
-			send "&6&lTABLISTMANAGER &eA new Config.yml was created!" to console
-		send "&6&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&6&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&6&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
+			send "&4&lTABLISTMANAGER &eA new Config.yml was created!" to console
+		send "&e&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&a&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&a&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
 		send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager: skript-reflect, skript-yaml and Vault" to console
 
