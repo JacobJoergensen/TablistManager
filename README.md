@@ -5,7 +5,6 @@
 
 
 **Wiki**: https://jacobjoergensen2.gitbook.io/tablistmanager/
-
 **Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
 
 <h1 align="center">Images</h1>
