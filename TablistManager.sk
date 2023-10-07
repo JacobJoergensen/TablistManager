@@ -73,7 +73,7 @@ function TlmConfigGenerator():
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
 	while {_p} is online:
-		load yml "plugins/TablistManager/Config.yml" as "config"
+		load yaml "plugins/TablistManager/Config.yml" as "config"
 		if tps is bigger than "%yaml value "Settings.Server.Tps_Performance_Value" of "config"%" parsed as number:
 			wait "%yaml value "Settings.Server.Update_Time" of "config"% seconds" parsed as timespan
 			if yaml value "Blacklisted.Enabled" of "config" is true:
@@ -86,10 +86,10 @@ function TlmHandler(p: player, w: world):
 			if {_access} is not false:
 				set all players' tab list header to TlmPlaceholders("%yaml value "Tablist.Header" of "config"%", {_p})
 				set all players' tab list footer to TlmPlaceholders("%yaml value "Tablist.Footer" of "config"%", {_p})
-				load yml "plugins/TablistManager/Players.yml" as "players"
+				load yaml "plugins/TablistManager/Players.yml" as "players"
 				if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
 					set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Player.Default_Tabname_Color" of "config"%%{_p}%"
-					save yml "players"
+					save yaml "players"
 
 				set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Player.Prefix" of "config" is true
 				set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
@@ -157,7 +157,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 					set {_value} to arg 3
 					set {_value} to "&7%{_player}%" if {_value} is "reset" or "default"
 					set yaml value "%uuid of {_player}%.tabname" of "players" to "%{_value}%"
-					save yml "players"
+					save yaml "players"
 					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_player}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_player}%><sgt:/tablist tabname %{_player}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
 					play sound "block.anvil.use" with volume 2 to {_player}
 				else:
