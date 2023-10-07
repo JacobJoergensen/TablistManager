@@ -9,7 +9,7 @@ TablistManager UPDATE 2.X has been tested on Skript version 2.7.1 and Minecraft 
 (1) Download and put the dependencies in your plugins folder.<br>
 (2) Restart your server. <br>
 (3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
-(4) Join your server and type /sk reload TablistManager <br>
+(4) Restart your server again. <br>
 
 <h3>Required Addons (dependencies)</h3>
 You need to have installed, Skript-Reflect, Skript-Yaml, Vault & a Permission Plugin on your server.
