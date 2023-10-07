@@ -22,4 +22,4 @@ Do you want to use the money placeholder you will need to have Essentials or CMI
 
 ![alt text](https://github.com/JacobJoergensen/TablistManager/blob/Beta-2.0/img/tablistm-showcase2.jpg?raw=true)
 ![alt text](https://github.com/JacobJoergensen/TablistManager/blob/main/img/tablistm-showcase.png?raw=true)
-![alt text](https://github.com/JacobJoergensen/TablistManager/blob/Beta-2.0/img/tablistm-showcase3.jpg?raw=true)
+![alt text](https://github.com/JacobJoergensen/TablistManager/blob/Beta-2.0/img/tablistm-showcase4.jpg?raw=true)
