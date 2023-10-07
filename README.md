@@ -1,8 +1,6 @@
 <h1 align="center">TablistManager</h1>
 
-<p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and enables you to easily edit and manage the server tablist directly through a config.yml file.</p>
-
-<br>
+<p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and enables you to easily edit and manage the server tablist directly through a config.yml file.</p> <br>
 
 <h3>Version Information</h3>
 TablistManager UPDATE 2.X has been tested on Skript version 2.7.1 and Minecraft version 1.20.2 We recommend that you run 1.19.X+ on your Minecraft server, as errors may occur on older versions. <br>
