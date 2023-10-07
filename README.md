@@ -20,6 +20,6 @@ Do you want to use the money placeholder you will need to have Essentials or CMI
 
 <h1 align="center">Images</h1>
 
-![alt text](https://github.com/JacobJoergensen/TablistManager/blob/main/img/tablistm-showcase2.jpg?raw=true)
+![alt text](https://github.com/JacobJoergensen/TablistManager/blob/Beta-2.0/img/tablistm-showcase2.jpg?raw=true)
 ![alt text](https://github.com/JacobJoergensen/TablistManager/blob/main/img/tablistm-showcase.png?raw=true)
 ![alt text](https://github.com/JacobJoergensen/TablistManager/blob/main/img/TablistM-Config.jpg?raw=true)
