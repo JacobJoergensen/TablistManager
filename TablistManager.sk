@@ -152,7 +152,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_player}
-			if arg 1 is "tabname":
+			if arg 1 is "tabname" or "name":
 				if arg 3 is set:
 					set {_value} to arg 3
 					set {_value} to "&7%{_player}%" if {_value} is "reset" or "default"
