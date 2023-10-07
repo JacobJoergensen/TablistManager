@@ -4,6 +4,20 @@
 
 <br>
 
+<h3>Version Information</h3>
+TablistManager UPDATE 2.X has been tested on Skript version 2.7.1 and Minecraft version 1.20.2 We recommend that you run 1.19.X+ on your Minecraft server, as errors may occur on older versions.
+
+<h3>Install Guide</h3>
+(1) Download and put the dependencies in your plugins folder.
+(2) Restart your server.
+(3) Upload TablistManager.sk to plugins/skript/scripts folder.
+(4) Join your server and type /sk reload TablistManager
+
+<h3>Required Addons (dependencies)</h3>
+You need to have installed, Skript-Reflect, Skript-Yaml, Vault & a Permission Plugin on your server.
+
+Do you want to use the money placeholder you will need to have Essentials or CMI installed also.
+
 **Wiki**: https://jacobjoergensen2.gitbook.io/tablistmanager/
 <br>**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
 
