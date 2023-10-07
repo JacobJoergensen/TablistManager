@@ -2,8 +2,11 @@
 
 <p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and enables you to easily edit and manage the server tablist directly through a config.yml file.</p>
 
+
+
 **Wiki**: https://jacobjoergensen2.gitbook.io/tablistmanager/
-**Bug Report & Ideas**: (https://github.com/JacobJoergensen/TablistManager/issues)
+
+**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
 
 <h1 align="center">Images</h1>
 
