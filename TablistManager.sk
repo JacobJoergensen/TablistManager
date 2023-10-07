@@ -1,51 +1,74 @@
-# GENERATION
-#import:
-	#java.net.URL as url
-	#java.io.BufferedReader as reader
-	#java.io.InputStreamReader as input
-
-#plural expression [get] (version) [(url)] %string%:
-	#return type: strings
-	#get:
-		#set {_link} to try new reader(try new input(try new url(expr-1).openStream()))
-		#set {_q::*} to ...try {_link}.lines()
-		#try {_link}.close()
-		#return {_q::*}
-
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
-		load yml "plugins/TablistManager/Config.yml" as "config"
-		if yaml "config" is empty:
-			set yaml value "Settings.Server.Server_Prefix" of "config" to "&6&lSERVER"
-			set yaml value "Settings.Server.Update_Checker" of "config" to true
-			set yaml value "Settings.Server.Admin_Permission" of "config" to "tablistmanager.admin"
-			set yaml value "Settings.Server.Tps_Performance_Value" of "config" to 12
-			set yaml value "Settings.Server.Update_Time" of "config" to 5
-			set yaml value "Settings.Player.Prefix" of "config" to false
-			set yaml value "Settings.Player.Suffix" of "config" to false
-			set yaml value "Settings.Player.Default_Tabname_Color" of "config" to "&7"
-			set yaml value "Settings.Player.Spectator_Hide" of "config" to true
-			set yaml value "Blacklisted.Enabled" of "config" to false
-			set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
-			set yaml value "Tablist.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
-			set yaml value "Tablist.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
-			save yml "config"
-			send "&4&lTABLISTMANAGER &eA new Config.yml was created!" to console
+		TlmConfigGenerator()
 		send "&e&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&a&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen2.gitbook.io/tablistmanager/%nl%&a&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
 		send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager: skript-reflect, skript-yaml and Vault" to console
 
+plural expression [get] (version) [(url)] %string%:
+	return type: strings
+	get:
+		set {_link} to try new class "java.io.BufferedReader"(try new class "java.io.InputStreamReader"(try new class "java.net.URL"(expr-1).openStream()))
+		set {_q::*} to ...try {_link}.lines()
+		try {_link}.close()
+		return {_q::*}
+
 on join:
-	#if player is operator:
-		#if yaml value "Settings.Server.Update_Checker" of "config" is true:
-			#if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
-				#send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
+	if player is operator:
+		if yaml value "Settings.Server.Update_Checker" of "config" is true:
+			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
+				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	TlmHandler(player, world of player)
 
 on gamemode change:
 	if yaml value "Settings.Player.Spectator_Hide" of "config" is true:
 		hide player from all players if player's gamemode is spectator
 		reveal player to all players if player's gamemode is not spectator
+
+# CONFIG GENERATOR
+function TlmConfigGenerator():
+	load yaml "plugins/TablistManager/Config.yml" as "config"
+	if yaml path "Content.Header" in "config" exists:
+		set yaml value "Settings.Server.Server_Prefix" of "config" to yaml value "Settings.Server_Prefix" of "config"
+		set yaml value "Settings.Server.Update_Checker" of "config" to yaml value "Settings.Update_Checker" of "config"
+		set yaml value "Settings.Server.Admin_Permission" of "config" to yaml value "Settings.Admin_Permission" of "config"
+		set yaml value "Settings.Server.Tps_Performance_Value" of "config" to 12
+		set yaml value "Settings.Server.Update_Time" of "config" to yaml value "Settings.Update_Time" of "config"
+		set yaml value "Settings.Player.Prefix" of "config" to yaml value "Settings.Prefix" of "config"
+		set yaml value "Settings.Player.Suffix" of "config" to yaml value "Settings.Suffix" of "config"
+		set yaml value "Settings.Player.Default_Tabname_Color" of "config" to "&7"
+		set yaml value "Settings.Player.Spectator_Hide" of "config" to true
+		set yaml value "Blacklisted.Enabled" of "config" to false
+		set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
+		set yaml value "Tablist.Header" of "config" to yaml value "Content.Header" of "config"
+		set yaml value "Tablist.Footer" of "config" to yaml value "Content.Footer" of "config"
+
+		delete yaml value "Settings.Server_Prefix" of "config"
+		delete yaml value "Settings.Update_Checker" of "config"
+		delete yaml value "Settings.Admin_Permission" of "config"
+		delete yaml value "Settings.Prefix" of "config"
+		delete yaml value "Settings.Suffix" of "config"
+		delete yaml value "Settings.Update_Time" of "config"
+		delete yaml value "Content.Header" of "config"
+		delete yaml value "Content.Footer" of "config"
+		delete yaml value "Content" of "config"
+		send "&4&lTABLISTMANAGER &eConverted old Config.yml to the new Config.yml format!" to console
+	if yaml "config" is empty:
+		set yaml value "Settings.Server.Server_Prefix" of "config" to "&6&lSERVER"
+		set yaml value "Settings.Server.Update_Checker" of "config" to true
+		set yaml value "Settings.Server.Admin_Permission" of "config" to "tablistmanager.admin"
+		set yaml value "Settings.Server.Tps_Performance_Value" of "config" to 12
+		set yaml value "Settings.Server.Update_Time" of "config" to 5
+		set yaml value "Settings.Player.Prefix" of "config" to false
+		set yaml value "Settings.Player.Suffix" of "config" to false
+		set yaml value "Settings.Player.Default_Tabname_Color" of "config" to "&7"
+		set yaml value "Settings.Player.Spectator_Hide" of "config" to true
+		set yaml value "Blacklisted.Enabled" of "config" to false
+		set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
+		set yaml value "Tablist.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
+		set yaml value "Tablist.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
+		send "&4&lTABLISTMANAGER &eA new Config.yml was created!" to console
+	save yaml "config"
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
@@ -111,7 +134,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 
 # COMMANDS
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
-	aliases: tablist, tl, tm, tb, tbl, tablistmanager, tablist-manager, tlm, tblm, tab
+	aliases: tablist, tablistmanager, tablist-manager, tab, tabm, tlm
 	trigger:
 		if player has permission "%yaml value "Settings.Server.Admin_Permission" of "config"%":
 			execute player command "/tablist" if arg 1 is "help"
