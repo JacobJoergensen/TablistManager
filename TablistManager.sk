@@ -52,6 +52,7 @@ function TlmConfigGenerator():
 		delete yaml value "Content.Header" of "config"
 		delete yaml value "Content.Footer" of "config"
 		delete yaml value "Content" of "config"
+		save yaml "config"
 		send "&4&lTABLISTMANAGER &eConverted old Config.yml to the new Config.yml format!" to console
 	if yaml "config" is empty:
 		set yaml value "Settings.Server.Server_Prefix" of "config" to "&6&lSERVER"
@@ -67,13 +68,13 @@ function TlmConfigGenerator():
 		set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
 		set yaml value "Tablist.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
 		set yaml value "Tablist.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
+		save yaml "config"
 		send "&4&lTABLISTMANAGER &eA new Config.yml was created!" to console
-	save yaml "config"
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
 	while {_p} is online:
-		load yaml "plugins/TablistManager/Config.yml" as "config"
+		TlmConfigGenerator()
 		if tps is bigger than "%yaml value "Settings.Server.Tps_Performance_Value" of "config"%" parsed as number:
 			wait "%yaml value "Settings.Server.Update_Time" of "config"% seconds" parsed as timespan
 			if yaml value "Blacklisted.Enabled" of "config" is true:
