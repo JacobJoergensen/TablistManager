@@ -16,8 +16,8 @@ plural expression [get] (version) [(url)] %string%:
 on join:
 	if player is operator:
 		if yaml value "Settings.Server.Update_Checker" of "config" is true:
-			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.0":
-				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.0&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
+			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.1":
+				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.1&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	TlmHandler(player, world of player)
 
 on gamemode change:
@@ -156,7 +156,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 			if arg 1 is "tabname" or "name":
 				if arg 3 is set:
 					set {_value} to arg 3
-					set {_value} to "&7%{_player}%" if {_value} is "reset" or "default"
+					set {_value} to "%yaml value "Settings.Player.Default_Tabname_Color" of "config"%%{_p}%" if {_value} is "reset" or "default"
 					set yaml value "%uuid of {_player}%.tabname" of "players" to "%{_value}%"
 					save yaml "players"
 					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_player}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_player}%><sgt:/tablist tabname %{_player}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
