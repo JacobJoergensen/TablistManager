@@ -101,7 +101,7 @@ function TlmHandler(p: player, w: world):
 				set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
 
 # PLACEHOLDERS
-function TlmPlaceholders(s: string, p: player) :: text:
+function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
 	replace all "{DisplayName}" or "{PlayerDisplayName}" with {_p}'s displayname in {_s}
@@ -109,6 +109,7 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
+	replace all "{ActiveItem}" with {_p}'s active item in {_s}
 	replace all "{Coordinate}" or "{Location}" with "%{_p}'s location%" in {_s}
 	replace all "{Gamemode}" with "%{_p}'s gamemode%" in {_s}
 	replace all "{LightLevel}" with "%light level at {_p}%" in {_s}
@@ -129,6 +130,11 @@ function TlmPlaceholders(s: string, p: player) :: text:
 	replace all "{ServerTime}" or "{RealTime}" with now formatted as "HH:mm:ss" in {_s}
 	replace all "{Date}" with now formatted as "d/M/yyyy" in {_s}
 	replace all "{Motd}" with motd in {_s}
+	replace all "{FreeMemory}" or "{FreeRam}" with free memory in {_s}
+	replace all "{MaxMemory}" or "{MaxRam}" with max memory in {_s}
+	replace all "{TotalMemory}" or "{TotalRam}" with total memory in {_s}
+	parse if plugin "GroupManager" or "LuckPerms" or "PermissionsEx" or "UltraPermissions" is enabled:
+	    replace all "{Group}" or "{Rank}" with group of {_p} in {_s}
 	parse if plugin "CMI" or "Essentials" is enabled:
 		replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 	return {_s}
