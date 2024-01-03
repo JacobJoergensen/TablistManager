@@ -19,6 +19,9 @@ on join:
 			#if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.1":
 				#send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.1&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	TlmHandler(player, world of player)
+	
+on quit:
+	TlmReset(player)
 
 on gamemode change:
 	if yaml value "Settings.Player.Spectator_Hide" of "config" is true:
@@ -54,7 +57,7 @@ function TlmConfigGenerator():
 		delete yaml value "Content" of "config"
 		save yaml "config"
 		send "&4&lTABLISTMANAGER &eConverted old Config.yml to the new Config.yml format!" to console
-	if yaml path "Tablist.Enabled" in "config" exists:
+	if yaml path "Tablist.Enabled" in "config" does not exist:
 		set yaml value "Tablist.Enabled" of "config" to true
 		save yaml "config"
 		send "&4&lTABLISTMANAGER &eUpdated your config to match the newest change!" to console		
@@ -78,37 +81,41 @@ function TlmConfigGenerator():
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
-	while {_p} is online:
-		TlmConfigGenerator()
-		if yaml value "Tablist.Enabled" of "config" is true:
-			if tps is bigger than "%yaml value "Settings.Server.Tps_Performance_Value" of "config"%" parsed as number:
-				wait "%yaml value "Settings.Server.Update_Time" of "config"% seconds" parsed as timespan
-				if yaml value "Blacklisted.Enabled" of "config" is true:
-					loop yaml list "Blacklisted.Worlds" of "config":
-						if "%loop-val%" parsed as world = {_w}:
-							set {_access} to false
-							reset players' tab list header
-							reset players' tab list footer
-							set {_p}'s tab list name to "&7%{_p}'s displayname%"
-				if {_access} is not false:
-					set all players' tab list header to TlmPlaceholders("%yaml value "Tablist.Header" of "config"%", {_p})
-					set all players' tab list footer to TlmPlaceholders("%yaml value "Tablist.Footer" of "config"%", {_p})
-					load yaml "plugins/TablistManager/Players.yml" as "players"
-					if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
-						set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Player.Default_Tabname_Color" of "config"%%{_p}%"
-						save yaml "players"
+	if {_p} does not have metadata value "tablist":
+		while {_p} is online:
+			set metadata value "tablist" of {_p} to true
+			TlmConfigGenerator()
+			if yaml value "Tablist.Enabled" of "config" is true:
+				if tps is bigger than "%yaml value "Settings.Server.Tps_Performance_Value" of "config"%" parsed as number:
+					wait "%yaml value "Settings.Server.Update_Time" of "config"% seconds" parsed as timespan
+					if yaml value "Blacklisted.Enabled" of "config" is true:
+						loop yaml list "Blacklisted.Worlds" of "config":
+							if "%loop-val%" parsed as world = {_w}:
+								set {_access} to false
+								TlmReset({_p})
+					if {_access} is not false:
+						set all players' tab list header to TlmPlaceholders("%yaml value "Tablist.Header" of "config"%", {_p})
+						set all players' tab list footer to TlmPlaceholders("%yaml value "Tablist.Footer" of "config"%", {_p})
+						load yaml "plugins/TablistManager/Players.yml" as "players"
+						if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
+							set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Player.Default_Tabname_Color" of "config"%%{_p}%"
+							save yaml "players"
+	
+						set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Player.Prefix" of "config" is true
+						set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
+						set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Player.Suffix" of "config" is true
+						set {_suffix} to "" if yaml value "Settings.Player.Suffix" of "config" is false
+	
+						set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
+						set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
 
-					set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Player.Prefix" of "config" is true
-					set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
-					set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Player.Suffix" of "config" is true
-					set {_suffix} to "" if yaml value "Settings.Player.Suffix" of "config" is false
-
-					set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
-					set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
-			else:
-				#stop loop
-				set yaml value "Tablist.Enabled" of "config" to false
-				send "&4&lTABLISTMANAGER &cServer performance too bad, Tablist auto update disabled!" to console
+# TABLIST RESETTER
+function TlmReset(p: player):
+	delete metadata value "tablist" of {_p}
+	reset players' tab list header
+	reset players' tab list footer
+	set {_p}'s tab list name to "&7%{_p}'s displayname%"
+	TlmHandler({_p}, world of {_p})
 
 # PLACEHOLDERS
 function TlmPlaceholders(s: string, p: player) returns text:
@@ -119,7 +126,7 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
-	replace all "{ActiveItem}" with "%{_p}'s active item%" in {_s}
+	replace all "{ActiveItem}" or "{CurrentItem}" with "%{_p}'s tool%" in {_s}
 	replace all "{Coordinate}" or "{Location}" with "%{_p}'s location%" in {_s}
 	replace all "{Gamemode}" with "%{_p}'s gamemode%" in {_s}
 	replace all "{LightLevel}" with "%light level at {_p}%" in {_s}
@@ -165,20 +172,21 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				if yaml value "Tablist.Enabled" of "config" is true:
 					set yaml value "Tablist.Enabled" of "config" to false
 					send action bar "&cTablist was disabled!"
-				else:
-					if yaml value "Tablist.Enabled" of "config" is false:
-						set yaml value "Tablist.Enabled" of "config" to true
-						send action bar "&aTablist was enabled!"
-				#TlmHandler(all players, world of all players)
+				else if yaml value "Tablist.Enabled" of "config" is false:
+					set yaml value "Tablist.Enabled" of "config" to true
+					send action bar "&aTablist was enabled!"
+				loop all players:
+					TlmReset(loop-player)
 
 			set {_player} to arg 2 if arg 2 is set
 			set {_player} to player if arg 2 is not set
+			
+			if arg 2 is "*" or "allplayers":
+				loop all players:
+					set {_player} to loop-player
 
 			if arg 1 is "update":
-				if arg 2 is "*" or "allplayers":
-					loop all players:
-						set {_player} to loop-player
-				TlmHandler({_player}, world of {_player})
+				TlmReset({_player})
 				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_player}
