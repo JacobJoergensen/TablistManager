@@ -1,23 +1,23 @@
 on load:
-	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
+	if plugin "skript-yaml" and "Vault" is enabled: #"skript-reflect" and
 		TlmConfigGenerator()
 		send "&e&lTABLISTMANAGER &eWas loaded correctly &8(&cNO ERRORS&8).%nl%&a&lTABLISTMANAGER WIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&a&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
 		send "&c&lADDON CHECKER &7You need the following Skript addons to run TablistManager: Skript-Reflect, Skript-Yaml and Vault" to console
 
-plural expression [get] (version) [(url)] %string%:
-	return type: strings
-	get:
-		set {_link} to try new class "java.io.BufferedReader"(try new class "java.io.InputStreamReader"(try new class "java.net.URL"(expr-1).openStream()))
-		set {_q::*} to ...try {_link}.lines()
-		try {_link}.close()
-		return {_q::*}
+#plural expression [get] (version) [(url)] %string%:
+	#return type: strings
+	#get:
+		#set {_link} to try new class "java.io.BufferedReader"(try new class "java.io.InputStreamReader"(try new class "java.net.URL"(expr-1).openStream()))
+		#set {_q::*} to ...try {_link}.lines()
+		#try {_link}.close()
+		#return {_q::*}
 
 on join:
-	if player is operator:
-		if yaml value "Settings.Server.Update_Checker" of "config" is true:
-			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.1":
-				send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.1&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
+	#if player is operator:
+		#if yaml value "Settings.Server.Update_Checker" of "config" is true:
+			#if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.1":
+				#send "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent version: &c2.1&8) - (&aLatest version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
 	TlmHandler(player, world of player)
 
 on gamemode change:
@@ -54,6 +54,10 @@ function TlmConfigGenerator():
 		delete yaml value "Content" of "config"
 		save yaml "config"
 		send "&4&lTABLISTMANAGER &eConverted old Config.yml to the new Config.yml format!" to console
+	if yaml path "Tablist.Enabled" in "config" exists:
+		set yaml value "Tablist.Enabled" of "config" to true
+		save yaml "config"
+		send "&4&lTABLISTMANAGER &eUpdated your config to match the newest change!" to console		
 	if yaml "config" is empty:
 		set yaml value "Settings.Server.Server_Prefix" of "config" to "&6&lSERVER"
 		set yaml value "Settings.Server.Update_Checker" of "config" to true
@@ -102,7 +106,8 @@ function TlmHandler(p: player, w: world):
 					set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
 					set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
 			else:
-				stop loop
+				#stop loop
+				set yaml value "Tablist.Enabled" of "config" to false
 				send "&4&lTABLISTMANAGER &cServer performance too bad, Tablist auto update disabled!" to console
 
 # PLACEHOLDERS
@@ -114,7 +119,7 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{PlayerHealth}" with "%{_p}'s health%" in {_s}
 	replace all "{MaxPlayerHealth}" with "%{_p}'s max health%" in {_s}
 	replace all "{FoodLevel}" with "%{_p}'s food level%" in {_s}
-	replace all "{ActiveItem}" with {_p}'s active item in {_s}
+	replace all "{ActiveItem}" with "%{_p}'s active item%" in {_s}
 	replace all "{Coordinate}" or "{Location}" with "%{_p}'s location%" in {_s}
 	replace all "{Gamemode}" with "%{_p}'s gamemode%" in {_s}
 	replace all "{LightLevel}" with "%light level at {_p}%" in {_s}
@@ -126,7 +131,7 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	set {_onlinePlayersWorld} to amount of all players in world "%{_p}'s world%"
 	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
-	replace all "{NonStaffOnline}" with number of all players - number of all players where [input has permission "tablistmanager.staff"] in {_s}
+	replace all "{NonStaffOnline}" with "%number of all players - number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{StaffOnline}" or "{OnlineStaff}" with "%number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
 	replace all "{BukkitVersion}" with bukkit version in {_s}
@@ -136,9 +141,9 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{ServerTime}" or "{RealTime}" with now formatted as "HH:mm:ss" in {_s}
 	replace all "{Date}" with now formatted as "d/M/yyyy" in {_s}
 	replace all "{Motd}" with motd in {_s}
-	replace all "{FreeMemory}" or "{FreeRam}" with free memory in {_s}
-	replace all "{MaxMemory}" or "{MaxRam}" with max memory in {_s}
-	replace all "{TotalMemory}" or "{TotalRam}" with total memory in {_s}
+	replace all "{FreeMemory}" or "{FreeRam}" with "%free memory%" in {_s}
+	replace all "{MaxMemory}" or "{MaxRam}" with "%max memory%" in {_s}
+	replace all "{TotalMemory}" or "{TotalRam}" with "%total memory%" in {_s}
 	parse if plugin "GroupManager" or "LuckPerms" or "PermissionsEx" or "UltraPermissions" is enabled:
 		replace all "{Group}" or "{Rank}" with group of {_p} in {_s}
 	parse if plugin "CMI" or "Essentials" is enabled:
@@ -160,16 +165,19 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				if yaml value "Tablist.Enabled" of "config" is true:
 					set yaml value "Tablist.Enabled" of "config" to false
 					send action bar "&cTablist was disabled!"
-				elseif yaml value "Tablist.Enabled" of "config" is false:
-					set yaml value "Tablist.Enabled" of "config" to true
-					send action bar "&aTablist was enabled!"
+				else:
+					if yaml value "Tablist.Enabled" of "config" is false:
+						set yaml value "Tablist.Enabled" of "config" to true
+						send action bar "&aTablist was enabled!"
+				#TlmHandler(all players, world of all players)
 
 			set {_player} to arg 2 if arg 2 is set
 			set {_player} to player if arg 2 is not set
 
 			if arg 1 is "update":
 				if arg 2 is "*" or "allplayers":
-					set {_player} to all players
+					loop all players:
+						set {_player} to loop-player
 				TlmHandler({_player}, world of {_player})
 				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
