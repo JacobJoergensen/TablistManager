@@ -105,8 +105,6 @@ function TlmHandler(p: player, w: world):
 	
 						set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
 						set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
-				#else:
-					#TlmReset({_p})
 
 # TABLIST RESETTER
 function TlmReset(p: player):
