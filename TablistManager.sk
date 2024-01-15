@@ -182,10 +182,6 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 
 			set {_player} to arg 2 if arg 2 is set
 			set {_player} to player if arg 2 is not set
-			
-			if arg 2 is "*" or "allplayers":
-				loop all players:
-					set {_player} to loop-player
 
 			if arg 1 is "update":
 				TlmReset({_player})
