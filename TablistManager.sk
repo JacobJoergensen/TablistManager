@@ -57,7 +57,7 @@ function TlmConfigGenerator():
 	if yaml path "Tablist.Enabled" in "config" does not exist:
 		set yaml value "Tablist.Enabled" of "config" to true
 		save yaml "config"
-		send "&4&lTABLISTMANAGER &eUpdated your config to match the newest change!" to console		
+		send "&4&lTABLISTMANAGER &eUpdated your config to match the latest change!" to console
 	if yaml "config" is empty:
 		set yaml value "Settings.Server.Server_Prefix" of "config" to "&6&lSERVER"
 		set yaml value "Settings.Server.Update_Checker" of "config" to true
