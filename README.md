@@ -16,8 +16,8 @@ TablistManager UPDATE 2.X has been tested on Skript version 2.8 and Minecraft ve
 (2) Restart your server. <br><br>
 
 <h3>Required Addons (dependencies)</h3>
-You need to have installed, Skript-Reflect, Skript-Yaml, Vault & a Permission Plugin on your server.
-Do you want to use the money placeholder you will need to have Essentials or CMI installed also. <br><br><br>
+You need to have installed, **Skript-Reflect**, **Skript-Yaml**, **Vault** & a **Permission Plugin** on your server.
+Do you want to use the money placeholder you will need to have** Essentials** or **CMI** installed also. <br><br><br>
 
 **Wiki**: https://jacobjoergensen.gitbook.io/tablistmanager/
 <br>**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
