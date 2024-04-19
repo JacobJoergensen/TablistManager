@@ -104,10 +104,15 @@ function TlmHandler(p: player, w: world):
 						set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Player.Default_Tabname_Color" of "config"%%{_p}%"
 						save yaml "players"
 
-					set {_prefix} to "%{_p}'s prefix% " if yaml value "Settings.Player.Prefix" of "config" is true
-					set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
-					set {_suffix} to " %{_p}'s suffix%" if yaml value "Settings.Player.Suffix" of "config" is true
-					set {_suffix} to "" if yaml value "Settings.Player.Suffix" of "config" is false
+						if yaml value "Settings.Player.Prefix" of "config" is true:
+							set {_prefix} to yaml value "%uuid of {_p}%.prefix" of "players" if yaml value "%uuid of {_p}%.prefix" of "players" is set
+							set {_prefix} to "%{_p}'s prefix% " if yaml value "%uuid of {_p}%.prefix" of "players" is not set
+						set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
+
+						if yaml value "Settings.Player.Suffix" of "config" is true:
+							set {_suffix} to yaml value "%uuid of {_p}%.suffix" of "players" if yaml value "%uuid of {_p}%.suffix" of "players" is set
+							set {_suffix} to " %{_p}'s suffix%" if yaml value "%uuid of {_p}%.suffix" of "players" is not set
+						set {_suffix} to "" if yaml value "Settings.Player.Suffix" of "config" is false
 
 					set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
 					set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
