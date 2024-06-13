@@ -144,8 +144,9 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	set {_worldTime} to time in world "%{_p}'s world%"
 	replace all "{WorldTime}" or "{WTime}" with "%{_worldTime}%" in {_s}
 	set {_onlinePlayersWorld} to amount of all players in world "%{_p}'s world%"
-	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s}
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
+	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s}
+	replace all "{InvisibleOnline}" or "{InvisiblePlayers}" with "%countInvisiblePlayers()%" in {_s}
 	replace all "{NonStaffOnline}" with "%number of all players - number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{StaffOnline}" or "{OnlineStaff}" with "%number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
@@ -164,6 +165,13 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	parse if plugin "CMI" or "Essentials" is enabled:
 		replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 	return {_s}
+
+function countInvisiblePlayers() returns number:
+	set {_invisibleCount} to 0
+	loop all players:
+		if loop-player is invisible:
+			add 1 to {_invisibleCount}
+	return {_invisibleCount}
 
 # COMMANDS
 command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
