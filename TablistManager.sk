@@ -200,23 +200,23 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 					send action bar "&aTablist was enabled!"
 				save yaml "config"
 
-			set {_player} to arg 2 if arg 2 is set
-			set {_player} to player if arg 2 is not set
+			set {_p} to arg 2 if arg 2 is set
+			set {_p} to player if arg 2 is not set
 
 			if arg 1 is "update":
-				TlmReset({_player})
-				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_player}
-				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_player} for 2 seconds if {_player} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
-				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_player}
+				TlmReset({_p})
+				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_p}
+				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds if {_p} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
+				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_p}
 			if arg 1 is "tabname" or "name":
 				if arg 3 is set:
 					set {_value} to arg 3
-					set {_value} to "%yaml value "Settings.Player.Default_Color" of "config"%%{_player}%" if {_value} is "reset" or "default"
-					set yaml value "%uuid of {_player}%.tabname" of "players" to "%{_value}%"
+					set {_value} to "%yaml value "Settings.Player.Default_Color" of "config"%%{_p}%" if {_value} is "reset" or "default"
+					set yaml value "%uuid of {_p}%.tabname" of "players" to "%{_value}%"
 					save yaml "players"
-					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_player}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_player}%><sgt:/tablist tabname %{_player}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
-					play sound "block.anvil.use" with volume 2 to {_player}
+					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_p}%><sgt:/tablist tabname %{_p}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
+					play sound "block.anvil.use" with volume 2 to {_p}
 				else:
-					send formatted "%yaml value "Settings.Server.Prefix" of "config"% <tooltip:&b&oClick here to try again><sgt:/tablist tabname %{_player}%>&cYou must enter your new tab name!<reset>"
+					send formatted "%yaml value "Settings.Server.Prefix" of "config"% <tooltip:&b&oClick here to try again><sgt:/tablist tabname %{_p}%>&cYou must enter your new tab name!<reset>"
 		else:
 			send "%yaml value "Settings.Server.Prefix" of "config"% &cSorry you do not have access to this!"
