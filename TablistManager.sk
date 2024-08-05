@@ -1,7 +1,7 @@
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
 		TlmConfigGenerator()
-		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aTABLISTMANAGER WIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&a&lTABLISTMANAGER REPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
+		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aWIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&a&lREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
 		send "&7[&eTABLIST MANAGER&7] &cYou need the following Skript addons to run TablistManager: Skript-Reflect, Skript-Yaml and Vault" to console
 
