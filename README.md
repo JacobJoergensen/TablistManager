@@ -5,7 +5,7 @@
 <p align="center">
       <strong>Start your journey with TablistManager today</strong>
       <br>
-      <a href="#docs"><strong>Explore TablistManager docs »</strong></a>
+      <a href="https://jacobjoergensen.gitbook.io/tablistmanager/" target="_blank"><strong>Explore TablistManager docs »</strong></a>
       <br>
       <br>
       <a href="#features">Features</a>
