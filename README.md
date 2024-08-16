@@ -53,7 +53,7 @@
 (1) Download and put the required addons in your plugins folder.<br>
 (2) Restart your server. <br>
 (3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
-(4) Restart your server again. <br><br>
+(4) Restart your server again.
 
 ## Required Addons (dependencies)
 You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml</strong>, <strong>Vault</strong> & <strong>a Permission plugin</strong> on your server.
