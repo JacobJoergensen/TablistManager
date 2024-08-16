@@ -22,6 +22,44 @@
 
 <br>
 
+## Features
+➵ **Dynamic Tablist Updates:** Automatically updates the tablist at regular intervals, ensuring real-time data reflection.
+
+➵ **Customizable Header and Footer:** Allows personalized messages in the tablist header and footer, with full support for placeholders and formatting.
+
+➵ **Player Tab Name Customization**  
+Enables the customization of each player's tab name with support for personalized prefixes, suffixes, and color formatting.
+
+➵ **Prefix and Suffix Support**  
+Add prefixes and suffixes to player names in the tablist, configurable via the plugin's settings.
+
+➵ **Built-in Placeholder System**  
+Includes a wide range of custom placeholders such as player name, health, location, server time, and more for dynamic tablist content.
+
+➵ **World Blacklist Option**  
+Prevents the tablist from appearing in specific worlds by utilizing the blacklist configuration.
+
+➵ **Configuration Generator & Management**  
+Automatically generates and manages configuration files (`config.yml` and `players.yml`), with built-in migration support for older config formats.
+
+➵ **Tablist Toggle Feature**  
+Allows administrators to easily enable or disable the tablist in-game with a command.
+
+➵ **Spectator Mode Visibility Control**  
+Automatically hides players from the tablist when they enter spectator mode, with the option to reveal them again when they leave.
+
+➵ **Version Update Checker**  
+Informs operators if a newer version of the plugin is available and provides download links to the latest release.
+
+➵ **PlaceholderAPI Support**  
+Easily extendable with PlaceholderAPI integration for additional placeholders from other plugins.
+
+➵ **Player Permission Control**  
+Specific permissions can be assigned to allow access to tablist management and configuration features (`tablistmanager.admin`).
+
+➵ **In-Game Commands**  
+Comprehensive command system for managing the tablist, toggling features, and configuring player tab names directly from within the game.
+
 <h3>Install Guide</h3>
 (1) Download and put the dependencies in your plugins folder.<br>
 (2) Restart your server. <br>
