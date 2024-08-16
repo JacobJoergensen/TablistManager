@@ -47,19 +47,23 @@
 
 ➵ **Version Update Checker**
 
-<h3>Install Guide</h3>
-(1) Download and put the dependencies in your plugins folder.<br>
+<br>
+
+## Install Guide
+(1) Download and put the required addons in your plugins folder.<br>
 (2) Restart your server. <br>
 (3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
 (4) Restart your server again. <br><br>
 
-<h3>Convert From 1.X to 2.X</h3>
+## Required Addons (dependencies)
+You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml</strong>, <strong>Vault</strong> & <strong>a Permission plugin</strong> on your server.
+<br>Do you want to use the money placeholder you will need to have <strong>Essentials</strong> or <strong>CMI</strong> installed also. <br><br><br>
+
+## Convert From 1.X to 2.X
 (1) Upload the new version of TablistManager.sk to plugins/skript/scripts folder. <br>
 (2) Restart your server. <br><br>
 
-<h3>Required Addons (dependencies)</h3>
-You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml</strong>, <strong>Vault</strong> & <strong>a Permission plugin</strong> on your server.
-<br>Do you want to use the money placeholder you will need to have <strong>Essentials</strong> or <strong>CMI</strong> installed also. <br><br><br>
+<br>
 
 **Wiki**: https://jacobjoergensen.gitbook.io/tablistmanager/
 <br>**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
