@@ -15,7 +15,6 @@
       <a href="https://github.com/JacobJoergensen/TablistManager/releases">Releases</a>
 </p>
 
-<hr>
 <br>
 
 > :information_source: **Version Information:** TablistManager has been tested on **Skript Version 2.9.1** and **Minecraft Version 1.21.1**. We recommend that you run **1.19.X+** on your Minecraft server and use the newest stable release of Skript, as errors may occur on older versions.
