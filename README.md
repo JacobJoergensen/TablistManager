@@ -24,6 +24,7 @@
 
 ## Features
 * **Dynamic Tablist Updates:**
+
 Automatically updates the tablist at regular intervals, ensuring real-time data reflection.
 * **Customizable Header and Footer:**
 Allows personalized messages in the tablist header and footer, with full support for placeholders and formatting.
