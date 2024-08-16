@@ -57,11 +57,11 @@
 
 ## Required Addons (dependencies)
 You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml</strong>, <strong>Vault</strong> & <strong>a Permission plugin</strong> on your server.
-<br>Do you want to use the money placeholder you will need to have <strong>Essentials</strong> or <strong>CMI</strong> installed also. <br><br><br>
+<br>Do you want to use the money placeholder you will need to have <strong>Essentials</strong> or <strong>CMI</strong> installed also.
 
 ## Convert From 1.X to 2.X
 (1) Upload the new version of TablistManager.sk to plugins/skript/scripts folder. <br>
-(2) Restart your server. <br><br>
+(2) Restart your server.
 
 <br>
 
