@@ -23,13 +23,13 @@
 <br>
 
 ## Features
-➵ **Dynamic Tablist Updates:**
+➵ **Dynamic Tablist Updates**  
 Automatically updates the tablist at regular intervals, ensuring real-time data reflection.
 
-➵ **Customizable Header and Footer**
+➵ **Customizable Header and Footer**  
 Allows personalized messages in the tablist header and footer, with full support for placeholders and formatting.
 
-➵ **Player Tab Name Customization**
+➵ **Player Tab Name Customization**  
 Enables the customization of each player's tab name with support for personalized prefixes, suffixes, and color formatting.
 
 ➵ **Prefix and Suffix Support**  
