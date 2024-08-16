@@ -23,7 +23,7 @@
 <br>
 
 ## Features
-➵ <strongDynamic Tablist Updates</strong>
+➵ <strong>Dynamic Tablist Updates</strong>
 
 ➵ Customizable Header and Footer
 
