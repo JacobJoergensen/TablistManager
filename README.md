@@ -1,9 +1,26 @@
 <h1 align="center">TablistManager</h1>
-
 <p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and enables you to easily edit and manage the server tablist directly through a config.yml file.</p> <br>
 
-<h3>Version Information</h3>
-TablistManager UPDATE 2.X has been tested on Skript version 2.8 and Minecraft version 1.20.4 We recommend that you run 1.19.X+ on your Minecraft server, as errors may occur on older versions. <br><br>
+<hr>
+<p align="center">
+      <strong>Start your journey with TablistManager today</strong>
+      <br>
+      <a href="#docs"><strong>Explore TablistManager docs »</strong></a>
+      <br>
+      <br>
+      <a href="#features">Features</a>
+      ·
+      <a href="#install-guide">Install Guide</a>
+      ·
+      <a href="https://github.com/JacobJoergensen/TablistManager/releases">Releases</a>
+</p>
+
+<hr>
+<br>
+
+> :information_source: **Version Information:** TablistManager has been tested on Skript version 2.9.1 and Minecraft version 1.21.1. We recommend that you run 1.19.X+ on your Minecraft server and use the newest stable release of Skript, as errors may occur on older versions.
+
+<br>
 
 <h3>Install Guide</h3>
 (1) Download and put the dependencies in your plugins folder.<br>
