@@ -54,7 +54,6 @@
 (2) Restart your server. <br>
 (3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
 (4) Restart your server again.
-
 <br>
 
 ## Required Addons (dependencies)
