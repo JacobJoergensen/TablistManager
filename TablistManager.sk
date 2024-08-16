@@ -1,9 +1,9 @@
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
 		TlmConfigGenerator()
-		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aWIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&a&lREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
+		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aWIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&aREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
-		send "&7[&eTABLIST MANAGER&7] &cYou need the following Skript addons to run TablistManager: Skript-Reflect, Skript-Yaml and Vault" to console
+		send "&7[&eTABLIST MANAGER&7] &cYou will need the following Skript addons to run TablistManager: Skript-Reflect, Skript-Yaml and Vault" to console
 
 plural expression (get) (version) [(url)] %string%:
 	return type: strings
@@ -88,7 +88,7 @@ function TlmConfigGenerator():
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
-	if {_p} does not have metadata value "tablist": # MAYBE MOVE THIS UNDER WHILE {_P} ?
+	if {_p} does not have metadata value "tablist":
 		while {_p} is online:
 			set metadata value "tablist" of {_p} to true
 			TlmConfigGenerator()
@@ -160,7 +160,7 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{WorldTime}" or "{WTime}" with "%{_worldTime}%" in {_s}
 	set {_onlinePlayersWorld} to amount of all players in world "%{_p}'s world%"
 	replace all "{Online}" or "{OnlinePlayers}" with "%number of all players%" in {_s}
-	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" or "{Opiw}" with "%{_onlinePlayersWorld}%" in {_s}
+	replace all "{OnlinePlayersInWorld}" or "{WorldOnline}" with "%{_onlinePlayersWorld}%" in {_s}
 	replace all "{NonStaffOnline}" with "%number of all players - number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{StaffOnline}" or "{OnlineStaff}" with "%number of all players where [input has permission "tablistmanager.staff"]%" in {_s}
 	replace all "{MaxPlayers}" with "%max player count%" in {_s}
@@ -179,7 +179,7 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	parse if plugin "CMI" or "Essentials" is enabled:
 		replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 
-	set {placeholderApi} to class "me.clip.placeholderapi.PlaceholderAPI" if plugin "placeholderapi" is enabled
+	#set {placeholderApi} to class "me.clip.placeholderapi.PlaceholderAPI" if plugin "placeholderapi" is enabled
 
 	return {_s}
 
