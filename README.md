@@ -23,13 +23,13 @@
 <br>
 
 ## Features
-➵ **Dynamic Tablist Updates**
+➵ Dynamic Tablist Updates
 
-➵ **Customizable Header and Footer**
+➵ Customizable Header and Footer
 
-➵ **Player Tab Name Customization**
+**➵** Player Tab Name Customization
 
-➵ **Prefix and Suffix Support**
+**➵** Prefix and Suffix Support
 
 ➵ **Built-in Placeholder System**
 
