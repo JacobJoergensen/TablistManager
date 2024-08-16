@@ -24,19 +24,19 @@
 
 ## Features
  ➵ **Dynamic Tablist Updates:**
-  Automatically updates the tablist at regular intervals, ensuring real-time data reflection.
+ Automatically updates the tablist at regular intervals, ensuring real-time data reflection.
 
  ➵ **Customizable Header and Footer:**
-  Allows personalized messages in the tablist header and footer, with full support for placeholders and formatting.
+ Allows personalized messages in the tablist header and footer, with full support for placeholders and formatting.
 
  ➵ **Player Tab Name Customization**  
   Enables the customization of each player's tab name with support for personalized prefixes, suffixes, and color formatting.
 
  ➵ **Prefix and Suffix Support**  
-  Add prefixes and suffixes to player names in the tablist, configurable via the plugin's settings.
+ Add prefixes and suffixes to player names in the tablist, configurable via the plugin's settings.
 
  ➵ **Built-in Placeholder System**  
-  Includes a wide range of custom placeholders such as player name, health, location, server time, and more for dynamic tablist content.
+ Includes a wide range of custom placeholders such as player name, health, location, server time, and more for dynamic tablist content.
 
 ➵ **World Blacklist Option**  
 Prevents the tablist from appearing in specific worlds by utilizing the blacklist configuration.
