@@ -5,7 +5,7 @@
 <p align="center">
       <strong>Start your journey with TablistManager today</strong>
       <br>
-      <a href="https://jacobjoergensen.gitbook.io/tablistmanager/" target="_blank"><strong>Explore TablistManager docs »</strong></a>
+      <a href="https://jacobjoergensen.gitbook.io/tablistmanager/"><strong>Explore TablistManager docs »</strong></a>
       <br>
       <br>
       <a href="#features">Features</a>
@@ -67,7 +67,6 @@ You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml
 
 <br>
 
-**Wiki**: https://jacobjoergensen.gitbook.io/tablistmanager/
 <br>**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
 
 <h1 align="center">Images</h1>
