@@ -26,6 +26,36 @@ on gamemode change:
 		reveal player to all players if player's gamemode is not spectator
 
 # CONFIG GENERATOR
+function generateConfig():
+	set {_dir} to new File("plugins/TablistManagerNew")
+	set {_file} to new File("plugins/TablistManagerNew/Config.yml")
+
+	if {_file}.exists():
+		stop
+
+	set {_yml} to new YamlConfiguration()
+
+	set {_worlds} to new ArrayList()
+	{_worlds}.add("test-world")
+	{_worlds}.add("blacklisted-world")
+
+	{_yml}.set("Settings.Server.Prefix", "&6&lSERVER")
+	{_yml}.set("Settings.Server.Update_Checker", true)
+	{_yml}.set("Settings.Server.Admin_Permission", "tablistmanager.admin")
+	{_yml}.set("Settings.Server.Minimum_Tps", 12)
+	{_yml}.set("Settings.Server.Update_Time", 5)
+	{_yml}.set("Settings.Player.Prefix", false)
+	{_yml}.set("Settings.Player.Suffix", false)
+	{_yml}.set("Settings.Player.Default_Color", "&7")
+	{_yml}.set("Settings.Player.Spectator_Hide", true)
+	{_yml}.set("Blacklisted.Enabled", false)
+	{_yml}.set("Blacklisted.Worlds", {_worlds})
+	{_yml}.set("Tablist.Enabled", true)
+	{_yml}.set("Tablist.Header", "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}")
+	{_yml}.set("Tablist.Footer", "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r")
+
+	{_yml}.save({_file})
+
 function TlmConfigGenerator():
 	load yaml "plugins/TablistManager/Config.yml" as "config"
 	if yaml "config" is empty:
