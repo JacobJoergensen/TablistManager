@@ -1,3 +1,10 @@
+import:
+	java.util.ArrayList
+	java.io.File
+	java.io.FileReader
+	java.io.FileWriter
+	org.bukkit.configuration.file.YamlConfiguration
+
 on load:
 	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
 		TlmConfigGenerator()
