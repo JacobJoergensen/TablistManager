@@ -32,8 +32,6 @@
 
 ➵ **Built-in Placeholder System**
 
-➵ **PlaceholderAPI Support**
-
 ➵ **World Blacklist Option**
 
 ➵ **Configuration Generator & Management**
