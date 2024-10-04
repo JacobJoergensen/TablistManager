@@ -61,7 +61,7 @@ You will need to have installed, <strong>Skript-Reflect</strong> together with <
 <br>
 
 ## Convert From 2.X to 3.X
-1. Take a backup of your config and player file, place the backups outside of the TablistManager folder.
+1. Take a backup of your config file, place the backups outside of the TablistManager folder.
 2. Delete the current TablistManager folder.
 3. Upload version 3.0 of TablistManager.sk to plugins/skript/scripts folder.
 4. Restart your server.
