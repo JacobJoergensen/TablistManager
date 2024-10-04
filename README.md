@@ -48,9 +48,9 @@
 
 ## Install Guide
 1. Download and put the required addons in your plugins folder.<br>
-(2) Restart your server. <br>
-(3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
-(4) Restart your server again.
+2. Restart your server. <br>
+3. Upload TablistManager.sk to plugins/skript/scripts folder. <br>
+4. Restart your server again.
 <br>
 
 ## Dependencies
@@ -61,11 +61,11 @@ You will need to have installed, <strong>Skript-Reflect</strong> together with <
 <br>
 
 ## Convert From 2.X to 3.X
-(1) Take a backup of your config and player file, place the backups outside of the TablistManager folder.
-(2) Delete the current TablistManager folder.
-(3) Upload version 3.0 of TablistManager.sk to plugins/skript/scripts folder.
-(4) Restart your server.
-(2) Setup your new config (you can copy your config values from the backup over to the new config format).
+1. Take a backup of your config and player file, place the backups outside of the TablistManager folder.
+2. Delete the current TablistManager folder.
+3. Upload version 3.0 of TablistManager.sk to plugins/skript/scripts folder.
+4. Restart your server.
+5. Setup your new config (you can copy your config values from the backup over to the new config format).
 
 <br>
 
