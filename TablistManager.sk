@@ -6,11 +6,11 @@ import:
 	org.bukkit.configuration.file.YamlConfiguration
 
 on load:
-	if plugin "skript-reflect" and "skript-yaml" and "Vault" is enabled:
+	if plugin "skript-reflect" is enabled:
 		TlmConfigGenerator()
 		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aWIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&aREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
-		send "&7[&eTABLIST MANAGER&7] &cYou will need the following Skript addons to run TablistManager: Skript-Reflect, Skript-Yaml and Vault" to console
+		send "&7[&eTABLIST MANAGER&7] &cYou will need to have Skript-Reflect installed on your server together Skript to run TablistManager" to console
 
 plural expression (get) (version) [(url)] %string%:
 	return type: strings
@@ -23,14 +23,16 @@ plural expression (get) (version) [(url)] %string%:
 on join:
 	if player is operator:
 		if yaml value "Settings.Server.Update_Checker" of "config" is true:
-			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "2.2":
-				send formatted "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent Version: &c2.2&8) - (&aLatest Version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:Click here to download the latest version>&f&nDownload latest version<reset>%nl%"
+			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "3.0":
+				send formatted "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent Version: &c3.0&8) - (&aLatest Version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:&bClick here to download> &f&nDownload latest version here!<reset>%nl%"
 	TlmReset(player)
 
 on gamemode change:
 	if yaml value "Settings.Player.Spectator_Hide" of "config" is true:
-		hide player from all players if player's gamemode is spectator
-		reveal player to all players if player's gamemode is not spectator
+		if player's gamemode is spectator:
+			hide player from all players
+		else:
+			reveal player to all players
 
 # CONFIG GENERATOR
 function generateConfig():
@@ -63,74 +65,44 @@ function generateConfig():
 
 	{_yml}.save({_file})
 
-function TlmConfigGenerator():
-	load yaml "plugins/TablistManager/Config.yml" as "config"
-	if yaml "config" is empty:
-		set yaml value "Settings.Server.Prefix" of "config" to "&6&lSERVER"
-		set yaml value "Settings.Server.Update_Checker" of "config" to true
-		set yaml value "Settings.Server.Admin_Permission" of "config" to "tablistmanager.admin"
-		set yaml value "Settings.Server.Minimum_Tps" of "config" to 12
-		set yaml value "Settings.Server.Update_Time" of "config" to 5
-		set yaml value "Settings.Player.Prefix" of "config" to false
-		set yaml value "Settings.Player.Suffix" of "config" to false
-		set yaml value "Settings.Player.Default_Color" of "config" to "&7"
-		set yaml value "Settings.Player.Spectator_Hide" of "config" to true
-		set yaml value "Blacklisted.Enabled" of "config" to false
-		set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
-		set yaml value "Tablist.Enabled" of "config" to true
-		set yaml value "Tablist.Header" of "config" to "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}"
-		set yaml value "Tablist.Footer" of "config" to "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r"
-		save yaml "config"
-		send "&7[&eTABLIST MANAGER&7] &aA new Config.yml was created!" to console
-	if yaml path "Content.Header" in "config" exists:
-		set yaml value "Settings.Server.Prefix" of "config" to yaml value "Settings.Server_Prefix" of "config"
-		set yaml value "Settings.Server.Update_Checker" of "config" to yaml value "Settings.Update_Checker" of "config"
-		set yaml value "Settings.Server.Admin_Permission" of "config" to yaml value "Settings.Admin_Permission" of "config"
-		set yaml value "Settings.Server.Minimum_Tps" of "config" to 12
-		set yaml value "Settings.Server.Update_Time" of "config" to yaml value "Settings.Update_Time" of "config"
-		set yaml value "Settings.Player.Prefix" of "config" to yaml value "Settings.Prefix" of "config"
-		set yaml value "Settings.Player.Suffix" of "config" to yaml value "Settings.Suffix" of "config"
-		set yaml value "Settings.Player.Default_Color" of "config" to "&7"
-		set yaml value "Settings.Player.Spectator_Hide" of "config" to true
-		set yaml value "Blacklisted.Enabled" of "config" to false
-		set yaml list "Blacklisted.Worlds" of "config" to "test-world" and "blacklisted-world"
-		set yaml value "Tablist.Header" of "config" to yaml value "Content.Header" of "config"
-		set yaml value "Tablist.Footer" of "config" to yaml value "Content.Footer" of "config"
+function loadConfig() returns object:
+	#set {_file} to new File("plugins/TablistManagerNew/Config.yml")
+	#set {_yml} to YamlConfiguration().loadConfiguration({_file})
+	#return {_yml}
 
-		delete yaml value "Settings.Server_Prefix" of "config"
-		delete yaml value "Settings.Update_Checker" of "config"
-		delete yaml value "Settings.Admin_Permission" of "config"
-		delete yaml value "Settings.Prefix" of "config"
-		delete yaml value "Settings.Suffix" of "config"
-		delete yaml value "Settings.Update_Time" of "config"
-		delete yaml value "Content.Header" of "config"
-		delete yaml value "Content.Footer" of "config"
-		delete yaml value "Content" of "config"
-		save yaml "config"
-		send "&7[&eTABLIST MANAGER&7] &aConverted old Config.yml to the new Config.yml format!" to console
-	if yaml path "Tablist.Enabled" in "config" does not exist:
-		set yaml value "Tablist.Enabled" of "config" to true
-		save yaml "config"
-		send "&7[&eTABLIST MANAGER&7] &aUpdated your config to match the latest change!" to console
-	if yaml path "Settings.Server.Minimum_Tps" in "config" does not exist:
-		set yaml value "Settings.Server.Prefix" of "config" to yaml value "Settings.Server.Server_Prefix" of "config"
-		set yaml value "Settings.Server.Minimum_Tps" of "config" to yaml value "Settings.Server.Tps_Performance_Value" of "config"
-		set yaml value "Settings.Player.Default_Color" of "config" to yaml value "Settings.Player.Default_Tabname_Color" of "config"
+	set {_file} to new File("plugins/TablistManagerNew/Config.yml")
 
-		delete yaml value "Settings.Server.Server_Prefix" of "config"
-		delete yaml value "Settings.Server.Tps_Performance_Value" of "config"
-		delete yaml value "Settings.Player.Default_Tabname_Color" of "config"
-		save yaml "config"
-		send "&7[&eTABLIST MANAGER&7] &aUpdated your config to match the latest change!" to console
+	# Use reflection to call the static method
+	set {_ymlClass} to new YamlConfiguration()
+	set {_method} to {_ymlClass}.getMethod("loadConfiguration", File)
+	set {_yml} to {_method}.invoke(null, {_file})
+
+	return {_yml}
+
+
+command /generateconfig:
+	trigger:
+		generateConfig()
+
+
+command /testconfig:
+	trigger:
+		set {_config} to loadConfig()
+		set {_minTps} to {_config}.getInt("Settings.Server.Minimum_Tps")
+		send "&c%{_minTps}%"
+
+	# SETUP A WORKING CONFIG SYSTEM.
+	# IMPLEMENT A CONVERT SYSTEM FROM OLD TO NEW SYSTEM IF NEEDED.
 
 # TABLIST HANDLER
 function TlmHandler(p: player, w: world):
+	TlmConfigGenerator()
 	if {_p} does not have metadata value "tablist":
 		while {_p} is online:
 			set metadata value "tablist" of {_p} to true
-			TlmConfigGenerator()
+			set {_config} to loadConfig()
 
-			if tps is bigger than "%yaml value "Settings.Server.Minimum_Tps" of "config"%" parsed as number:
+			if tps is bigger than "%{_config}.getInt("Settings.Server.Minimum_Tps")%" parsed as number:
 				if yaml value "Settings.Server.Update_Time" of "config" is smaller than 1:
 					set yaml value "Settings.Server.Update_Time" of "config" to 1
 					save yaml "config"
@@ -152,22 +124,27 @@ function TlmHandler(p: player, w: world):
 					set all players' tab list header to TlmPlaceholders("%yaml value "Tablist.Header" of "config"%", {_p})
 					set all players' tab list footer to TlmPlaceholders("%yaml value "Tablist.Footer" of "config"%", {_p})
 					load yaml "plugins/TablistManager/Players.yml" as "players"
+
 					if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
 						set yaml value "%uuid of {_p}%.tabname" of "players" to "%yaml value "Settings.Player.Default_Color" of "config"%%{_p}%"
 						save yaml "players"
 
-						if yaml value "Settings.Player.Prefix" of "config" is true:
-							set {_prefix} to yaml value "%uuid of {_p}%.prefix" of "players" if yaml value "%uuid of {_p}%.prefix" of "players" is set
-							set {_prefix} to "%{_p}'s prefix% " if yaml value "%uuid of {_p}%.prefix" of "players" is not set
-						set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
+						if parse if plugin "Vault" is enabled:
+							if yaml value "Settings.Player.Prefix" of "config" is true:
+								set {_prefix} to yaml value "%uuid of {_p}%.prefix" of "players" if yaml value "%uuid of {_p}%.prefix" of "players" is set
+								set {_prefix} to "%{_p}'s prefix% " if yaml value "%uuid of {_p}%.prefix" of "players" is not set
+								set {_prefix} to "" if {_prefix} is not set
 
-						if yaml value "Settings.Player.Suffix" of "config" is true:
-							set {_suffix} to yaml value "%uuid of {_p}%.suffix" of "players" if yaml value "%uuid of {_p}%.suffix" of "players" is set
-							set {_suffix} to " %{_p}'s suffix%" if yaml value "%uuid of {_p}%.suffix" of "players" is not set
+							if yaml value "Settings.Player.Suffix" of "config" is true:
+								set {_suffix} to yaml value "%uuid of {_p}%.suffix" of "players" if yaml value "%uuid of {_p}%.suffix" of "players" is set
+								set {_suffix} to " %{_p}'s suffix%" if yaml value "%uuid of {_p}%.suffix" of "players" is not set
+								set {_suffix} to "" if {_suffix} is not set
+
+						set {_prefix} to "" if yaml value "Settings.Player.Prefix" of "config" is false
 						set {_suffix} to "" if yaml value "Settings.Player.Suffix" of "config" is false
 
-					set {_tabName} to yaml value "%uuid of {_p}%.tabname" of "players"
-					set {_p}'s tab list name to "%{_prefix}%%{_tabName}%%{_suffix}%"
+					set {_name} to yaml value "%uuid of {_p}%.tabname" of "players"
+					set {_p}'s tab list name to "%{_prefix}%%{_name}%%{_suffix}%"
 
 # TABLIST RESETTER
 function TlmReset(p: player):
@@ -211,23 +188,23 @@ function TlmPlaceholders(s: string, p: player) returns text:
 	replace all "{FreeMemory}" or "{FreeRam}" with "%free memory%" in {_s}
 	replace all "{MaxMemory}" or "{MaxRam}" with "%max memory%" in {_s}
 	replace all "{TotalMemory}" or "{TotalRam}" with "%total memory%" in {_s}
-	parse if plugin "GroupManager" or "LuckPerms" or "PermissionsEx" or "UltraPermissions" is enabled:
-		replace all "{Group}" or "{Rank}" with group of {_p} in {_s}
-	parse if plugin "CMI" or "Essentials" is enabled:
-		replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 
-	#set {placeholderApi} to class "me.clip.placeholderapi.PlaceholderAPI" if plugin "placeholderapi" is enabled
+	parse if plugin "Vault" is enabled:
+		parse if plugin "GroupManager" or "LuckPerms" or "PermissionsEx" or "UltraPermissions" is enabled:
+			replace all "{Group}" or "{Rank}" with group of {_p} in {_s}
+		parse if plugin "CMI" or "Essentials" is enabled:
+			replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 
 	return {_s}
 
 # COMMANDS
-command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
+command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<text>]:
 	aliases: tablist, tablistmanager, tablist-manager, tab, tabm, tlm
 	trigger:
 		if player has permission "%yaml value "Settings.Server.Admin_Permission" of "config"%":
 			execute player command "/tablist" if arg 1 is "help"
 			if arg 1 is not set:
-				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablistManager&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%name of player%%nl%&cPriority: optional>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist toggle &8, &7Toggle the Tablist on and off.<reset>%nl%<sgt:/tablist tabname %name of player% &&7%name of player%> &8➳ &e/Tablist tabname <tooltip:&bExample: &7%name of player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%name of player%>&8<&etabname&8> <reset>&8, &7Change the tabname of a specific player.<reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist reload> &8➳ &e/Tablist reload &8, &7Reload TablistManager.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{ActiveItem} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{NonStaffOnline} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{FreeMemory} &8| &f{MaxMemory} &8| &f{TotalMemory} %nl%&f%nl%&f{Group} &8➳ &cRequire GroupManager, Luckperms, PermissionEx or UltraPermissions %nl%&f{Money} &8➳ &cRequire CMI or Essentials >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTablistManager&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
+				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%name of player%%nl%&cPriority: optional>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist toggle &8, &7Toggle the Tablist on and off.<reset>%nl%<sgt:/tablist modify %name of player% &&7%name of player%> &8➳ &e/Tablist modify <tooltip:&bExample: &7%name of player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%name of player%>&8<&etab name&8> <reset>&8, &7Modify the tab name of a specific player.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{ActiveItem} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{NonStaffOnline} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{FreeMemory} &8| &f{MaxMemory} &8| &f{TotalMemory} %nl%&f%nl%&f{Group} &8➳ &cRequire GroupManager, Luckperms, PermissionEx or UltraPermissions %nl%&f{Money} &8➳ &cRequire CMI or Essentials >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
 			if arg 1 is "toggle":
 				if yaml value "Tablist.Enabled" of "config" is true:
 					set yaml value "Tablist.Enabled" of "config" to false
@@ -245,15 +222,23 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>]:
 				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_p}
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds if {_p} has permission "%yaml value "Settings.Admin_Permission" of "config"%"
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_p}
-			if arg 1 is "tabname" or "name":
-				if arg 3 is set:
-					set {_value} to arg 3
-					set {_value} to "%yaml value "Settings.Player.Default_Color" of "config"%%{_p}%" if {_value} is "reset" or "default"
-					set yaml value "%uuid of {_p}%.tabname" of "players" to "%{_value}%"
-					save yaml "players"
-					send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_p}%><sgt:/tablist tabname %{_p}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
-					play sound "block.anvil.use" with volume 2 to {_p}
+			if arg 1 is "modify":
+				if arg 4 is set:
+					if arg 3 is "name":
+						set {_value} to arg 4
+						set {_value} to "%yaml value "Settings.Player.Default_Color" of "config"%%{_p}%" if {_value} is "reset" or "default"
+						set yaml value "%uuid of {_p}%.tabname" of "players" to "%{_value}%"
+						send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_p}%><sgt:/tablist tabname %{_p}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
+					if arg 3 is "prefix":
+
+					if arg 3 is "suffix":
+
+					if arg 3 is "hide":
+
+					if arg 3 is "reveal":
+
+					play sound "block.anvil.use" with volume 2 to {_p} if arg 3 is "name" or "prefix" or "suffix" or "hide" or "reveal"
 				else:
-					send formatted "%yaml value "Settings.Server.Prefix" of "config"% <tooltip:&b&oClick here to try again><sgt:/tablist tabname %{_p}%>&cYou must enter your new tab name!<reset>"
+					send formatted "%yaml value "Settings.Server.Prefix" of "config"% <tooltip:&b&oClick here to try again><sgt:/tablist modify %{_p}% name &&c%{_p}%>&cYou're missing the name value, please try again:        &7/tablist modify %{_p}% name &&c&7c%{_p}%<reset>" if arg 3 is "name"
 		else:
 			send "%yaml value "Settings.Server.Prefix" of "config"% &cSorry you do not have access to this!"
