@@ -47,9 +47,9 @@
 <br>
 
 ## Install Guide
-1. Download and put the required addons in your plugins folder.<br>
-2. Restart your server. <br>
-3. Upload TablistManager.sk to plugins/skript/scripts folder. <br>
+1. Download and put the required addons in your plugins folder.
+2. Restart your server.
+3. Upload TablistManager.sk to plugins/skript/scripts folder.
 4. Restart your server again.
 <br>
 
