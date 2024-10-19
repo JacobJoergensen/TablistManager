@@ -31,7 +31,7 @@ on join:
 		if {_config}.get("server_update_checker") is true:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "3.0":
 				send formatted "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent Version: &c3.0&8) - (&aLatest Version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:&bClick here to download> &f&nDownload latest version here!<reset>%nl%"
-	TlmReset(player)
+	tablistReset(player)
 
 on gamemode change:
 	set {_config} to loadConfig()
@@ -42,7 +42,7 @@ on gamemode change:
 			reveal player to all players
 
 # CONFIG HANDLING
-function generateConfig():
+local function generateConfig():
 	set {_dir} to new File("plugins/TablistManager")
 	set {_file} to new File("plugins/TablistManager/Config.yml")
 
@@ -72,7 +72,7 @@ function generateConfig():
 
 	{_yml}.save({_file})
 
-function loadConfig() returns object:
+local function loadConfig() returns object:
 	set {_file} to new File("plugins/TablistManager/Config.yml")
 	set {_yml} to new YamlConfiguration()
 	{_yml}.load({_file})
@@ -96,7 +96,7 @@ function loadConfig() returns object:
 
 	return {_config}
 
-function modifyConfig(key: text, value: object):
+local function modifyConfig(key: text, value: object):
 	set {_file} to new File("plugins/TablistManager/Config.yml")
 	set {_yml} to new YamlConfiguration()
 
@@ -105,7 +105,7 @@ function modifyConfig(key: text, value: object):
 	{_yml}.save({_file})
 
 # TABLIST HANDLING
-function TlmHandler(p: player, w: world):
+function tablistHandler(p: player, w: world):
 	if {_p} does not have metadata value "tablist":
 		while {_p} is online:
 			set metadata value "tablist" of {_p} to true
@@ -120,18 +120,18 @@ function TlmHandler(p: player, w: world):
 
 				if {_config}.get("tablist_enabled") is false:
 					set {_access} to false
-					TlmReset({_p})
+					tablistReset({_p})
 
 				if {_config}.get("blacklisted_enabled") is true:
 					set {_worlds::*} to {_config}.getList("Blacklisted.Worlds")
 					loop {_worlds::*}:
 						if "%loop-value%" parsed as world = {_w}:
 							set {_access} to false
-							TlmReset({_p})
+							tablistReset({_p})
 
 				if {_access} is not false:
-					set all players' tab list header to TlmPlaceholders("%{_config}.get("tablist_header")%", {_p})
-					set all players' tab list footer to TlmPlaceholders("%{_config}.get("tablist_footer")%", {_p})
+					set all players' tab list header to tablistPlaceholders("%{_config}.get("tablist_header")%", {_p})
+					set all players' tab list footer to tablistPlaceholders("%{_config}.get("tablist_footer")%", {_p})
 					#load yaml "plugins/TablistManager/Players.yml" as "players"
 
 					#if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
@@ -160,15 +160,15 @@ function TlmHandler(p: player, w: world):
 					set {_p}'s tab list name to "%{_prefix}%%{_name}%%{_suffix}%"
 
 # TABLIST RESETTER
-function TlmReset(p: player):
+function tablistReset(p: player):
 	delete metadata value "tablist" of {_p}
 	reset players' tab list header
 	reset players' tab list footer
 	set {_p}'s tab list name to "&7%{_p}'s displayname%"
-	TlmHandler({_p}, world of {_p})
+	tablistHandler({_p}, world of {_p})
 
 # PLACEHOLDERS
-function TlmPlaceholders(s: string, p: player) returns text:
+function tablistPlaceholders(s: string, p: player) returns text:
 	replace all "{NewLine}" or "{NL}" or "||" or "&&" with newline in {_s}
 	replace all "{Player}" or "{PlayerName}" with "%{_p}%" in {_s}
 	replace all "{DisplayName}" or "{PlayerDisplayName}" with {_p}'s displayname in {_s}
@@ -231,7 +231,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 			set {_p} to player if arg 2 is not set
 
 			if arg 1 is "update":
-				TlmReset({_p})
+				tablistReset({_p})
 				play sound "ENTITY_PLAYER_LEVELUP" with volume 2 to {_p}
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds if {_p} has permission "%{_config}.get("server_admin_permission")%"
 				send action bar "&eT&6a&eb&6l&ei&6s&et &6U&ep&6d&ea&6t&ee&6d" to {_p}
