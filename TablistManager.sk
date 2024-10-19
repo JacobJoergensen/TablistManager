@@ -6,6 +6,7 @@ import:
 	java.io.FileReader
 	java.io.FileWriter
 	java.io.InputStreamReader
+	java.lang.StringBuilder
 	java.net.URL
 	org.bukkit.configuration.file.YamlConfiguration
 
@@ -41,12 +42,12 @@ on gamemode change:
 		else:
 			reveal player to all players
 
-# CONFIG HANDLING
+# FILE HANDLING
 local function generateConfig():
 	set {_dir} to new File("plugins/TablistManager")
-	set {_file} to new File("plugins/TablistManager/Config.yml")
+	set {_config} to new File("plugins/TablistManager/Config.yml")
 
-	if {_file}.exists():
+	if {_config}.exists():
 		stop
 
 	set {_yml} to new YamlConfiguration()
@@ -70,7 +71,7 @@ local function generateConfig():
 	{_yml}.set("Tablist.Header", "&d&lWelcome To My Server {newline} &c&oVisit the Config.yml to edit this!{newline}")
 	{_yml}.set("Tablist.Footer", "{nl}&e&lPlayers: &a{OnlinePlayers}/{MaxPlayers}, &7&oHello {player} {nl} &fTps: {Tps} &8| &fReal Time: {realtime} &r")
 
-	{_yml}.save({_file})
+	{_yml}.save({_config})
 
 local function loadConfig() returns object:
 	set {_file} to new File("plugins/TablistManager/Config.yml")
@@ -84,17 +85,22 @@ local function loadConfig() returns object:
 	{_config}.put("server_admin_permission", {_yml}.getString("Settings.Server.Admin_Permission"))
 	{_config}.put("server_min_tps", {_yml}.getInt("Settings.Server.Minimum_Tps"))
 	{_config}.put("server_update_time", {_yml}.getInt("Settings.Server.Update_Time"))
-	{_config}.put("player_prefix", {_yml}.getInt("Settings.Player.Prefix"))
-	{_config}.put("player_suffix", {_yml}.getInt("Settings.Player.Suffix"))
-	{_config}.put("player_default_color", {_yml}.getInt("Settings.Player.Default_Color"))
-	{_config}.put("player_spectator_hide", {_yml}.getInt("Settings.Player.Spectator_Hide"))
-	{_config}.put("blacklisted_enabled", {_yml}.getInt("Blacklisted.Enabled"))
-	{_config}.put("blacklisted_worlds", {_yml}.getInt("Blacklisted.Worlds"))
-	{_config}.put("tablist_enabled", {_yml}.getInt("Tablist.Enabled"))
+	{_config}.put("player_prefix", {_yml}.getBoolean("Settings.Player.Prefix"))
+	{_config}.put("player_suffix", {_yml}.getBoolean("Settings.Player.Suffix"))
+	{_config}.put("player_default_color", {_yml}.getString("Settings.Player.Default_Color"))
+	{_config}.put("player_spectator_hide", {_yml}.getBoolean("Settings.Player.Spectator_Hide"))
+	{_config}.put("blacklisted_enabled", {_yml}.getBoolean("Blacklisted.Enabled"))
+	{_config}.put("blacklisted_worlds", {_yml}.getStringList("Blacklisted.Worlds"))
+	{_config}.put("tablist_enabled", {_yml}.getBoolean("Tablist.Enabled"))
 	{_config}.put("tablist_header", {_yml}.getString("Tablist.Header"))
 	{_config}.put("tablist_footer", {_yml}.getString("Tablist.Footer"))
 
 	return {_config}
+
+command /testplayers:
+	trigger:
+		set {_config} to loadConfig()
+		send {_config}.get("player_default_color")
 
 local function modifyConfig(key: text, value: object):
 	set {_file} to new File("plugins/TablistManager/Config.yml")
@@ -132,32 +138,32 @@ function tablistHandler(p: player, w: world):
 				if {_access} is not false:
 					set all players' tab list header to tablistPlaceholders("%{_config}.get("tablist_header")%", {_p})
 					set all players' tab list footer to tablistPlaceholders("%{_config}.get("tablist_footer")%", {_p})
-					#load yaml "plugins/TablistManager/Players.yml" as "players"
 
-					#if yaml value "%uuid of {_p}%.tabname" of "players" is not set:
-						#set yaml value "%uuid of {_p}%.tabname" of "players" to "%{_config}.get("player_default_color")%%{_p}%"
-						#save yaml "players"
+					parse if plugin "Vault" is enabled:
+						if {_config}.get("player_prefix") is true:
+							if metadata value "tablist_player_prefix" of {_p} is set:
+								set {_prefix} to metadata value "tablist_player_prefix" of {_p}
+							else:
+								set {_prefix} to "%{_p}'s prefix%"
 
-					set {_hello} to true # dummy code
-					if {_hello} is true: # dummy code
+						if {_config}.get("player_suffix") is true:
+							if metadata value "tablist_player_suffix" of {_p} is set:
+								set {_suffix} to metadata value "tablist_player_suffix" of {_p}
+							else:
+								set {_suffix} to "%{_p}'s suffix%"
 
-						parse if plugin "Vault" is enabled:
-							if {_config}.get("player_prefix") is true:
-								#set {_prefix} to yaml value "%uuid of {_p}%.prefix" of "players" if yaml value "%uuid of {_p}%.prefix" of "players" is set
-								#set {_prefix} to "%{_p}'s prefix% " if yaml value "%uuid of {_p}%.prefix" of "players" is not set
-								set {_prefix} to "" if {_prefix} is not set
+					if metadata value "tablist_player_color" of {_p} is not set:
+						set metadata value "tablist_player_color" of {_p} to {_config}.get("player_default_color")
 
-							if {_config}.get("player_suffix") is true:
-								#set {_suffix} to yaml value "%uuid of {_p}%.suffix" of "players" if yaml value "%uuid of {_p}%.suffix" of "players" is set
-								#set {_suffix} to " %{_p}'s suffix%" if yaml value "%uuid of {_p}%.suffix" of "players" is not set
-								set {_suffix} to "" if {_suffix} is not set
+					set {_displayName} to new StringBuilder("%metadata value "tablist_player_color" of {_p}%%{_p}%")
 
-						set {_prefix} to "" if {_config}.get("player_prefix") is false
-						set {_suffix} to "" if {_config}.get("player_prefix") is false
+					if {_prefix} is set:
+						{_displayName}.insert(0, {_prefix})
 
-					#set {_name} to yaml value "%uuid of {_p}%.tabname" of "players"
-					set {_name} to {_p} # TODO REMOVE THIS AGAIN WHEN THE ABOVE IS FIXED!
-					set {_p}'s tab list name to "%{_prefix}%%{_name}%%{_suffix}%"
+					if {_suffix} is set:
+						{_displayName}.append({_suffix})
+
+					set {_p}'s tab list name to {_displayName}.toString()
 
 # TABLIST RESETTER
 function tablistReset(p: player):
@@ -218,7 +224,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 		if player has permission "%{_config}.get("server_admin_permission")%":
 			execute player command "/tablist" if arg 1 is "help"
 			if arg 1 is not set:
-				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%name of player%%nl%&cPriority: optional>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist toggle &8, &7Toggle the Tablist on and off.<reset>%nl%<sgt:/tablist modify %name of player% &&7%name of player%> &8➳ &e/Tablist modify <tooltip:&bExample: &7%name of player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%name of player%>&8<&etab name&8> <reset>&8, &7Modify the tab name of a specific player.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{ActiveItem} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{NonStaffOnline} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{FreeMemory} &8| &f{MaxMemory} &8| &f{TotalMemory} %nl%&f%nl%&f{Group} &8➳ &cRequire GroupManager, Luckperms, PermissionEx or UltraPermissions %nl%&f{Money} &8➳ &cRequire CMI or Essentials >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
+				send formatted "&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f%nl%&6COMMAND OVERVIEW%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist &8, &7Shows this message. <reset>%nl%<sgt:/tablist update> &8➳ &e/Tablist update <tooltip:&bExample: &7%name of player%%nl%&aPriority: &7optional>&8<&eplayer&8><reset> &8, &7Update the Tablist manually for a specific player. <reset>%nl%<tooltip:&b&oClick Here To Execute This Command><run command:/tablist> &8➳ &e/Tablist toggle &8, &7Toggle the Tablist on and off.<reset>%nl%<sgt:/tablist modify %name of player% &&7%name of player%> &8➳ &e/Tablist modify <tooltip:&bExample: &7%name of player%>&8<&eplayer&8> <tooltip:&bExample: &c&&cc%name of player%>&8<&etab name&8> <reset>&8, &7Modify the tab name of a specific player.<reset>%nl%&f%nl%&f%nl%<tooltip:&ePlaceholders: &f{NewLine} &8| &f{Player} &8| &f{Displayname} &8| &f{Level} &8| &f{PlayerHealth} &8| &f{MaxPlayerHealth} &8| &f{FoodLevel} &8| &f{ActiveItem} &8| &f{Coordinate} &8| &f{Gamemode} &8| &f{LightLevel} &8| &f{IpAddress} &8| &f{Timeplayed} &8| &f{World} &8| &f{WorldTime} &8| &f{OnlinePlayersInWorld} &8| &f{OnlinePlayers} &8| &f{NonStaffOnline} &8| &f{StaffOnline} &8| &f{MaxPlayers} &8| &f{BukkitVersion} &8| &f{MinecraftVersion} &8| &f{Ping} &8| &f{Tps} &8| &f{ServerTime} &8| &f{Date} &8| &f{Motd} &8| &f{FreeMemory} &8| &f{MaxMemory} &8| &f{TotalMemory} %nl%&f%nl%&f{Group} &8➳ &cRequire GroupManager, Luckperms, PermissionEx or UltraPermissions %nl%&f{Money} &8➳ &cRequire CMI or Essentials >&6PLACEHOLDER HOVER LIST &8(&7Hover your mouse over here&8) <reset>%nl%&f%nl%&c▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ &c&lTABLIST MANAGER&c ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%nl%&f"
 			if arg 1 is "toggle":
 				if {_config}.get("tablist_enabled") is true:
 					modifyConfig("Tablist.Enabled", false)
@@ -240,7 +246,7 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 					if arg 3 is "name":
 						set {_value} to arg 4
 						set {_value} to "%{_config}.get("player_default_color")%%{_p}%" if {_value} is "reset" or "default"
-						#set yaml value "%uuid of {_p}%.tabname" of "players" to "%{_value}%"
+						set metadata value "tablist_player_prefix" of {_p} to {_value}
 						send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_p}%><sgt:/tablist tabname %{_p}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
 					if arg 3 is "prefix":
 
