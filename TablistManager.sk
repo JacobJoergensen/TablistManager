@@ -213,6 +213,25 @@ function tablistPlaceholders(s: string, p: player) returns text:
 		parse if plugin "CMI" or "Essentials" is enabled:
 			replace all "{Money}" or "{Balance}" with "%{_p}'s balance%" in {_s}
 
+	while {_s} contains "<#":
+		set {_startIndex} to index of "<#" in {_s}
+		set {_endIndex} to {_startIndex} + 9
+
+		if {_endIndex} is less than or equal to length of {_s}:
+			set {_hex} to substring of {_s} from {_startIndex} to {_endIndex}
+			set {_formatted} to "§x"
+
+			set {_r1} to substring of {_hex} from 3 to 3
+			set {_r2} to substring of {_hex} from 4 to 4
+			set {_g1} to substring of {_hex} from 5 to 5
+			set {_g2} to substring of {_hex} from 6 to 6
+			set {_b1} to substring of {_hex} from 7 to 7
+			set {_b2} to substring of {_hex} from 8 to 8
+
+			set {_formatted} to "%{_formatted}%§%{_r1}%§%{_r2}%§%{_g1}%§%{_g2}%§%{_b1}%§%{_b2}%"
+
+			replace first {_hex} in {_s} with {_formatted}
+
 	return {_s}
 
 # COMMANDS
