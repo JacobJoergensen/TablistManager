@@ -97,11 +97,6 @@ local function loadConfig() returns object:
 
 	return {_config}
 
-command /testplayers:
-	trigger:
-		set {_config} to loadConfig()
-		send {_config}.get("player_default_color")
-
 local function modifyConfig(key: text, value: object):
 	set {_file} to new File("plugins/TablistManager/Config.yml")
 	set {_yml} to new YamlConfiguration()
@@ -112,62 +107,66 @@ local function modifyConfig(key: text, value: object):
 
 # TABLIST HANDLING
 function tablistHandler(p: player, w: world):
-	if {_p} does not have metadata value "tablist":
+	if {_p} does not have metadata value "tablist_active":
+		set metadata value "tablist_active" of {_p} to true
+
+		set {_config} to loadConfig()
+
+		if {_config}.get("server_update_time") is smaller than 1:
+			modifyConfig("Settings.Server.Update_Time", 1)
+			send "&7[&eTABLIST MANAGER&7] &aChanged update time in your config as it can't be smaller than 1!" to console
+
 		while {_p} is online:
-			set metadata value "tablist" of {_p} to true
-			set {_config} to loadConfig()
+			wait "%{_config}.get("server_update_time")% seconds" parsed as timespan
 
 			if tps is bigger than "%{_config}.get("server_min_tps")%" parsed as number:
-				#if {_config}.get("server_update_time") is smaller than 1:
-					#modifyConfig("Settings.Server.Update_Time", 1)
-					#send "&7[&eTABLIST MANAGER&7] &aChanged update time in your config as it can't be smaller than 1!" to console
+				continue
 
-				wait "%{_config}.get("server_update_time")% seconds" parsed as timespan
+			if {_config}.get("tablist_enabled") is false:
+				set {_access} to false
+				tablistReset({_p})
+			
+			if {_config}.get("blacklisted_enabled") is true:
+				set {_worlds::*} to {_config}.getList("Blacklisted.Worlds")
+				loop {_worlds::*}:
+					if "%loop-value%" parsed as world = {_w}:
+						set {_access} to false
+						tablistReset({_p})
 
-				if {_config}.get("tablist_enabled") is false:
-					set {_access} to false
-					tablistReset({_p})
+			if {_access} is not false:
+				set all players' tab list header to tablistPlaceholders("%{_config}.get("tablist_header")%", {_p})
+				set all players' tab list footer to tablistPlaceholders("%{_config}.get("tablist_footer")%", {_p})
 
-				if {_config}.get("blacklisted_enabled") is true:
-					set {_worlds::*} to {_config}.getList("Blacklisted.Worlds")
-					loop {_worlds::*}:
-						if "%loop-value%" parsed as world = {_w}:
-							set {_access} to false
-							tablistReset({_p})
+				parse if plugin "Vault" is enabled:
+					if {_config}.get("player_prefix") is true:
+						if metadata value "tablist_player_prefix" of {_p} is set:
+							set {_prefix} to metadata value "tablist_player_prefix" of {_p}
+						else:
+							set {_prefix} to "%{_p}'s prefix%"
 
-				if {_access} is not false:
-					set all players' tab list header to tablistPlaceholders("%{_config}.get("tablist_header")%", {_p})
-					set all players' tab list footer to tablistPlaceholders("%{_config}.get("tablist_footer")%", {_p})
+					if {_config}.get("player_suffix") is true:
+						if metadata value "tablist_player_suffix" of {_p} is set:
+							set {_suffix} to metadata value "tablist_player_suffix" of {_p}
+						else:
+							set {_suffix} to "%{_p}'s suffix%"
 
-					parse if plugin "Vault" is enabled:
-						if {_config}.get("player_prefix") is true:
-							if metadata value "tablist_player_prefix" of {_p} is set:
-								set {_prefix} to metadata value "tablist_player_prefix" of {_p}
-							else:
-								set {_prefix} to "%{_p}'s prefix%"
+				if metadata value "tablist_player_color" of {_p} is not set:
+					set metadata value "tablist_player_color" of {_p} to {_config}.get("player_default_color")
 
-						if {_config}.get("player_suffix") is true:
-							if metadata value "tablist_player_suffix" of {_p} is set:
-								set {_suffix} to metadata value "tablist_player_suffix" of {_p}
-							else:
-								set {_suffix} to "%{_p}'s suffix%"
+				set {_displayName} to new StringBuilder("%metadata value "tablist_player_color" of {_p}%%{_p}%")
+				
+				if {_prefix} is set:
+					{_displayName}.insert(0, {_prefix})
 
-					if metadata value "tablist_player_color" of {_p} is not set:
-						set metadata value "tablist_player_color" of {_p} to {_config}.get("player_default_color")
+				if {_suffix} is set:
+					{_displayName}.append({_suffix})
 
-					set {_displayName} to new StringBuilder("%metadata value "tablist_player_color" of {_p}%%{_p}%")
+				set {_p}'s tab list name to {_displayName}.toString()
 
-					if {_prefix} is set:
-						{_displayName}.insert(0, {_prefix})
-
-					if {_suffix} is set:
-						{_displayName}.append({_suffix})
-
-					set {_p}'s tab list name to {_displayName}.toString()
+		delete metadata value "tablist_active" of {_p}
 
 # TABLIST RESETTER
 function tablistReset(p: player):
-	delete metadata value "tablist" of {_p}
 	reset players' tab list header
 	reset players' tab list footer
 	set {_p}'s tab list name to "&7%{_p}'s displayname%"
