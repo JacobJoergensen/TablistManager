@@ -1,25 +1,74 @@
 <h1 align="center">TablistManager</h1>
+<p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and <br> enables you to easily edit and manage the server tablist directly through a config.yml file.</p> <br>
 
-<p align="center">TablistManager is a tablist tool for Minecraft servers. Designed for server administrators, and enables you to easily edit and manage the server tablist directly through a config.yml file.</p> <br>
 
-<h3>Version Information</h3>
-TablistManager UPDATE 2.X has been tested on Skript version 2.8 and Minecraft version 1.20.4 We recommend that you run 1.19.X+ on your Minecraft server, as errors may occur on older versions. <br><br>
+<p align="center">
+      <strong>Start your journey with TablistManager today</strong>
+      <br>
+      <a href="https://jacobjoergensen.gitbook.io/tablistmanager/"><strong>Explore TablistManager docs »</strong></a>
+      <br>
+      <br>
+      <a href="#features">Features</a>
+      ·
+      <a href="#install-guide">Install Guide</a>
+      ·
+      <a href="https://github.com/JacobJoergensen/TablistManager/releases">Releases</a>
+</p>
 
-<h3>Install Guide</h3>
-(1) Download and put the dependencies in your plugins folder.<br>
-(2) Restart your server. <br>
-(3) Upload TablistManager.sk to plugins/skript/scripts folder. <br>
-(4) Restart your server again. <br><br>
+<br>
 
-<h3>Convert From 1.X to 2.X</h3>
-(1) Upload the new version of TablistManager.sk to plugins/skript/scripts folder. <br>
-(2) Restart your server. <br><br>
+> :information_source: **Version Information:** TablistManager has been tested on **Skript Version 2.9.3** and **Minecraft Version 1.21.1**. We recommend that you run **1.19.X+** on your Minecraft server and use the newest stable release of Skript, as errors may occur on older versions.
 
-<h3>Required Addons (dependencies)</h3>
-You need to have installed, <strong>Skript-Reflect</strong>, <strong>Skript-Yaml</strong>, <strong>Vault</strong> & <strong>a Permission plugin</strong> on your server.
-<br>Do you want to use the money placeholder you will need to have <strong>Essentials</strong> or <strong>CMI</strong> installed also. <br><br><br>
+<br>
 
-**Wiki**: https://jacobjoergensen.gitbook.io/tablistmanager/
+## Features
+➵ **Dynamic Tablist Updates**
+
+➵ **Customizable Header and Footer**
+
+➵ **Player Tab Name Customization**
+
+➵ **Prefix and Suffix Support**
+
+➵ **Built-in Placeholder System**
+
+➵ **World Blacklist Option**
+
+➵ **Configuration Generator & Management**
+
+➵ **Tablist Toggle Feature**
+
+➵ **Spectator Mode Visibility Control**
+
+➵ **In-Game Commands**
+
+➵ **Version Update Checker**
+
+<br>
+
+## Install Guide
+1. Download and put the required addons in your plugins folder.
+2. Restart your server.
+3. Upload TablistManager.sk to plugins/skript/scripts folder.
+4. Restart your server again.
+<br>
+
+## Dependencies
+You will need to have installed, <strong>Skript-Reflect</strong> together with <strong>Skript</strong> to run TablistManager.
+- Install <strong>A permission plugin</strong> for group and rank features to be enabled. Also remember to install <strong>Vault</strong>.
+- Install <strong>Essentials</strong> or <strong>CMI</strong> for the currency placeholders to be enabled. Also remember to install <strong>Vault</strong>.
+
+<br>
+
+## Convert From 2.X to 3.X
+1. Take a backup of your config file, place the backups outside of the TablistManager folder.
+2. Delete the current TablistManager folder.
+3. Upload version 3.0 of TablistManager.sk to plugins/skript/scripts folder.
+4. Restart your server.
+5. Setup your new config (you can copy your config values from the backup over to the new config format).
+
+<br>
+
 <br>**Bug Report & Ideas**: https://github.com/JacobJoergensen/TablistManager/issues
 
 <h1 align="center">Images</h1>
