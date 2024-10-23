@@ -290,6 +290,6 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 
 					play sound "block.anvil.use" with volume 2 to {_p} if arg 3 is "name" or "prefix" or "suffix" or "hide" or "reveal"
 				else:
-					send "%{_config}.get("server_prefix")% <tooltip:&b&oClick here to try again><sgt:/tablist modify %{_p}% name &&c%{_p}%>&cYou're missing the name value, please try again:        &7/tablist modify %{_p}% name &&c&7c%{_p}%<reset>" if arg 3 is "name"
+					send "%{_config}.get("server_prefix")% <tooltip:&b&oClick here to try again><sgt:/tablist modify %{_p}%>&cYou're missing argument 3 and 4, please try again: &7/tablist modify<reset>"
 		else:
 			send "%{_config}.get("server_prefix")% &cSorry you do not have access to this!"
