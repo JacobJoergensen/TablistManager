@@ -29,15 +29,13 @@ plural expression (get) (version) [(url)] %string%:
 
 on join:
 	if player is operator:
-		set {_config} to loadConfig()
-		if {_config}.get("server_update_checker") is true:
+		if loadConfig().get("server_update_checker") is true:
 			if "%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%" is not "3.0":
 				send formatted "&c&lUPDATE CHECKER &7You are running an old version of TablistManager &8(&cCurrent Version: &c3.0&8) - (&aLatest Version: &a%get version "https://raw.githubusercontent.com/JacobJoergensen/TablistManager/main/version.txt"%&8) %nl% <link:https://github.com/JacobJoergensen/TablistManager/releases/latest><tooltip:&bClick here to download> &f&nDownload latest version here!<reset>%nl%"
 	tablistReset(player)
 
 on gamemode change:
-	set {_config} to loadConfig()
-	if {_config}.get("player_spectator_hide") is true:
+	if loadConfig().get("player_spectator_hide") is true:
 		if player's gamemode is spectator:
 			hide player from all players
 		else:
