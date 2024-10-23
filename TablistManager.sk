@@ -113,8 +113,8 @@ function tablistHandler(p: player, w: world):
 
 		set {_config} to loadConfig()
 
-		if metadata value "tablist_player_color" of {_p} is not set:
-			set metadata value "tablist_player_color" of {_p} to {_config}.get("player_default_color")
+		if metadata value "tablist_player_name" of {_p} is not set:
+			set metadata value "tablist_player_name" of {_p} to "%{_config}.get("player_default_color")%%{_p}%"
 
 		if {_config}.get("server_update_time") is smaller than 1:
 			modifyConfig("Settings.Server.Update_Time", 1)
@@ -154,7 +154,7 @@ function tablistHandler(p: player, w: world):
 						else:
 							set {_suffix} to {_p}'s suffix
 
-				set {_displayName} to new StringBuilder("%metadata value "tablist_player_color" of {_p}%%{_p}%")
+				set {_displayName} to new StringBuilder("%metadata value "tablist_player_name" of {_p}%")
 				
 				if {_prefix} is set:
 					{_displayName}.insert(0, {_prefix})
@@ -266,17 +266,27 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds if {_p} has permission "%{_config}.get("server_admin_permission")%"
 			if arg 1 is "modify":
 				if arg 3 and arg 4 is set:
-					set {_value} to arg 4
 					if arg 3 is "name":
-						set {_value} to "%{_config}.get("player_default_color")%%{_p}%" if {_value} is "reset"
-						set metadata value "tablist_player_prefix" of {_p} to {_value}
-						send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a TabName design,%nl% <tooltip:&b&oClick here to edit TabName for %{_p}%><sgt:/tablist tabname %{_p}%>&8(&c&lPREVIEW: %{_value}%&8)<reset>%nl%&f" to player
+						if arg 4 is "reset":
+							set metadata value "tablist_player_name" of {_p} to "%{_config}.get("player_default_color")%%{_p}%"
+							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist name" to player
+						else:
+							set metadata value "tablist_player_name" of {_p} to arg 4
+							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist name,%nl% <tooltip:&b&oClick here to edit tablist name for %{_p}%><sgt:/tablist modify name %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 					if arg 3 is "prefix":
-						delete metadata value "tablist_player_prefix" of {_p} if {_value} is "reset"
-						set metadata value "tablist_player_prefix" of {_p} to {_value}
+						if arg 4 is "reset":
+							delete metadata value "tablist_player_prefix" of {_p}
+							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist prefix" to player
+						else:
+							set metadata value "tablist_player_prefix" of {_p} to arg 4
+							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist prefix to%nl% <tooltip:&b&oClick here to edit TabPrefix for %{_p}%><sgt:/tablist modify prefix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 					if arg 3 is "suffix":
-						delete metadata value "tablist_player_suffix" of {_p} if {_value} is "reset"
-						set metadata value "tablist_player_suffix" of {_p} to {_value}
+						if arg 4 is "reset":
+							delete metadata value "tablist_player_suffix" of {_p}
+							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist suffix" to player
+						else:
+							set metadata value "tablist_player_suffix" of {_p} to arg 4
+							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist suffix to%nl% <tooltip:&b&oClick here to edit tablist suffix for %{_p}%><sgt:/tablist modify suffix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 
 					play sound "block.anvil.use" with volume 2 to {_p} if arg 3 is "name" or "prefix" or "suffix" or "hide" or "reveal"
 				else:
