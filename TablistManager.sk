@@ -269,21 +269,21 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 							set metadata value "tablist_player_name" of {_p} to "%{_config}.get("player_default_color")%%{_p}%"
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist name" to player
 						else:
-							set metadata value "tablist_player_name" of {_p} to arg 4
+							set metadata value "tablist_player_name" of {_p} to tablistPlaceholders(arg 4, {_p})
 							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist name,%nl% <tooltip:&b&oClick here to edit tablist name for %{_p}%><sgt:/tablist modify name %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 					if arg 3 is "prefix":
 						if arg 4 is "reset":
 							delete metadata value "tablist_player_prefix" of {_p}
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist prefix" to player
 						else:
-							set metadata value "tablist_player_prefix" of {_p} to arg 4
+							set metadata value "tablist_player_prefix" of {_p} to tablistPlaceholders(arg 4, {_p})
 							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist prefix to%nl% <tooltip:&b&oClick here to edit TabPrefix for %{_p}%><sgt:/tablist modify prefix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 					if arg 3 is "suffix":
 						if arg 4 is "reset":
 							delete metadata value "tablist_player_suffix" of {_p}
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist suffix" to player
 						else:
-							set metadata value "tablist_player_suffix" of {_p} to arg 4
+							set metadata value "tablist_player_suffix" of {_p} to tablistPlaceholders(arg 4, {_p})
 							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist suffix to%nl% <tooltip:&b&oClick here to edit tablist suffix for %{_p}%><sgt:/tablist modify suffix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
 
 					play sound "block.anvil.use" with volume 2 to {_p} if arg 3 is "name" or "prefix" or "suffix" or "hide" or "reveal"
