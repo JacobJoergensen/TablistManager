@@ -30,7 +30,7 @@
 
 ➵ **Prefix and Suffix Support**
 
-➵ **Hex color support in tablist header and footer**
+➵ **Built-in Hex Color Support**
 
 ➵ **Built-in Placeholder System**
 
