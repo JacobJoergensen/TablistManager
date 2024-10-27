@@ -26,9 +26,11 @@
 
 ➵ **Customizable Header and Footer**
 
-➵ **Player Tab Name Customization**
+➵ **Player Tab Name Customization (Display Name)**
 
 ➵ **Prefix and Suffix Support**
+
+➵ **Hex color support in tablist header and footer**
 
 ➵ **Built-in Placeholder System**
 
