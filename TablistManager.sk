@@ -1,6 +1,7 @@
 import:
 	java.util.ArrayList
 	java.util.HashMap
+	java.util.function.Consumer
 	java.io.BufferedReader
 	java.io.File
 	java.io.FileReader
@@ -50,8 +51,8 @@ local function generateConfig():
 		stop
 
 	set {_yml} to new YamlConfiguration()
-
 	set {_worlds} to new ArrayList()
+
 	{_worlds}.add("test-world")
 	{_worlds}.add("blacklisted-world")
 
@@ -59,7 +60,7 @@ local function generateConfig():
 	{_yml}.set("Settings.Server.Update_Checker", true)
 	{_yml}.set("Settings.Server.Admin_Permission", "tablistmanager.admin")
 	{_yml}.set("Settings.Server.Minimum_Tps", 12)
-	{_yml}.set("Settings.Server.Update_Time", 5)
+	{_yml}.set("Settings.Server.Update_Time", 10)
 	{_yml}.set("Settings.Player.Prefix", false)
 	{_yml}.set("Settings.Player.Suffix", false)
 	{_yml}.set("Settings.Player.Default_Color", "&7")
@@ -83,7 +84,6 @@ local function loadConfig() returns object:
 	{_config}.put("server_update_checker", {_yml}.getBoolean("Settings.Server.Update_Checker"))
 	{_config}.put("server_admin_permission", {_yml}.getString("Settings.Server.Admin_Permission"))
 	{_config}.put("server_min_tps", {_yml}.getInt("Settings.Server.Minimum_Tps"))
-	{_config}.put("server_update_time", {_yml}.getInt("Settings.Server.Update_Time"))
 	{_config}.put("player_prefix", {_yml}.getBoolean("Settings.Player.Prefix"))
 	{_config}.put("player_suffix", {_yml}.getBoolean("Settings.Player.Suffix"))
 	{_config}.put("player_default_color", {_yml}.getString("Settings.Player.Default_Color"))
@@ -93,6 +93,11 @@ local function loadConfig() returns object:
 	{_config}.put("tablist_enabled", {_yml}.getBoolean("Tablist.Enabled"))
 	{_config}.put("tablist_header", {_yml}.getString("Tablist.Header"))
 	{_config}.put("tablist_footer", {_yml}.getString("Tablist.Footer"))
+
+	if {_yml}.getInt("Settings.Server.Update_Time") is smaller than 1:
+		modifyConfig("Settings.Server.Update_Time", 1)
+		send "&7[&eTABLIST MANAGER&7] &cChanged update time in your config as it can't be smaller than 1!" to console
+	{_config}.put("server_update_time", {_yml}.getInt("Settings.Server.Update_Time"))
 
 	return {_config}
 
@@ -106,19 +111,12 @@ local function modifyConfig(key: text, value: object):
 
 # TABLIST HANDLING
 function tablistHandler(p: player, w: world):
-	if metadata value "tablist_active" of {_p} is not set:
+	if {_p} does not have metadata value "tablist_active":
 		set metadata value "tablist_active" of {_p} to true
 
-		set {_config} to loadConfig()
-
-		if metadata value "tablist_player_name" of {_p} is not set:
-			set metadata value "tablist_player_name" of {_p} to "%{_config}.get("player_default_color")%%{_p}%"
-
-		if {_config}.get("server_update_time") is smaller than 1:
-			modifyConfig("Settings.Server.Update_Time", 1)
-			send "&7[&eTABLIST MANAGER&7] &cChanged update time in your config as it can't be smaller than 1!" to console
-
 		while {_p} is online:
+			set {_config} to loadConfig()
+
 			wait "%{_config}.get("server_update_time")% seconds" parsed as timespan
 
 			if tps is smaller than {_config}.get("server_min_tps"):
@@ -128,8 +126,8 @@ function tablistHandler(p: player, w: world):
 				set {_access} to false
 				tablistReset({_p})
 
-			if {_config}.get("blacklisted_enabled") is true: # FIX THIS FEATURE DOES NOT WORK
-				set {_worlds::*} to {_config}.getStringList("Blacklisted.Worlds")
+			if {_config}.get("blacklisted_enabled") is true:
+				set {_worlds::*} to {_config}.get("Blacklisted.Worlds") #StringList
 				loop {_worlds::*}:
 					if "%loop-value%" parsed as world = {_w}:
 						set {_access} to false
@@ -152,7 +150,7 @@ function tablistHandler(p: player, w: world):
 						else:
 							set {_suffix} to {_p}'s suffix
 
-				set {_displayName} to new StringBuilder("%metadata value "tablist_player_name" of {_p}%")
+				set {_displayName} to new StringBuilder(display name of {_p})
 				
 				if {_prefix} is set:
 					{_displayName}.insert(0, {_prefix})
@@ -162,12 +160,12 @@ function tablistHandler(p: player, w: world):
 
 				set {_p}'s tab list name to {_displayName}.toString()
 
+	delete metadata value "tablist_active" of {_p}
+
 # TABLIST RESETTER
 function tablistReset(p: player):
-	delete metadata value "tablist_active" of {_p}
 	reset players' tab list header
 	reset players' tab list footer
-	set {_p}'s tab list name to "&7%{_p}'s displayname%"
 	tablistHandler({_p}, world of {_p})
 
 # PLACEHOLDERS
@@ -264,30 +262,30 @@ command /tablistmanager:tablistmanager [<text>] [<offline player>] [<text>] [<te
 				send title "&4&lTABLIST HELP" with subtitle "&8/&ctablist help" to {_p} for 2 seconds if {_p} has permission "%{_config}.get("server_admin_permission")%"
 			if arg 1 is "modify":
 				if arg 3 and arg 4 is set:
-					if arg 3 is "name":
+					if arg 3 is "display_name" or "display" or "name":
 						if arg 4 is "reset":
-							set metadata value "tablist_player_name" of {_p} to "%{_config}.get("player_default_color")%%{_p}%"
+							set display name of {_p} to "&f%{_p}%"
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist name" to player
 						else:
-							set metadata value "tablist_player_name" of {_p} to tablistPlaceholders(arg 4, {_p})
-							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist name,%nl% <tooltip:&b&oClick here to edit tablist name for %{_p}%><sgt:/tablist modify name %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
+							set display name of {_p} to arg 4
+							send formatted "<tooltip:&bClick to edit display name><sgt:/tablist modify %{_p}% display_name>&2&lEDIT: &aYou have changed &2%{_p}%'s%nl% &a tablist name to, %arg 4%<reset>" to player
 					if arg 3 is "prefix":
 						if arg 4 is "reset":
 							delete metadata value "tablist_player_prefix" of {_p}
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist prefix" to player
 						else:
 							set metadata value "tablist_player_prefix" of {_p} to tablistPlaceholders(arg 4, {_p})
-							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist prefix to%nl% <tooltip:&b&oClick here to edit TabPrefix for %{_p}%><sgt:/tablist modify prefix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
+							send formatted "<tooltip:&bClick to edit prefix><sgt:/tablist modify %{_p}% prefix>&2&lEDIT: &aYou have changed &2%{_p}%'s%nl% &a tablist prefix to, %arg 4%<reset>" to player
 					if arg 3 is "suffix":
 						if arg 4 is "reset":
 							delete metadata value "tablist_player_suffix" of {_p}
 							send formatted "&f%nl%&2&lEDIT: &aYou have reset &2%{_p}%'s&a tablist suffix" to player
 						else:
 							set metadata value "tablist_player_suffix" of {_p} to tablistPlaceholders(arg 4, {_p})
-							send formatted "&f%nl%&2&lEDIT: &aYou have changed &2%{_p}%'s&a tablist suffix to%nl% <tooltip:&b&oClick here to edit tablist suffix for %{_p}%><sgt:/tablist modify suffix %{_p}%>&8(&c&lPREVIEW: %arg 4%&8)<reset>" to player
+							send formatted "<tooltip:&bClick to edit suffix><sgt:/tablist modify %{_p}% suffix>&2&lEDIT: &aYou have changed &2%{_p}%'s%nl% &a tablist suffix to, %arg 4%<reset>" to player
 
 					play sound "block.anvil.use" with volume 2 to {_p} if arg 3 is "name" or "prefix" or "suffix" or "hide" or "reveal"
 				else:
-					send "%{_config}.get("server_prefix")% <tooltip:&b&oClick here to try again><sgt:/tablist modify %{_p}%>&cYou're missing argument 3 and 4, please try again: &7/tablist modify<reset>"
+					send formatted "%{_config}.get("server_prefix")% <tooltip:&bClick here to try again><sgt:/tablist modify %{_p}%>&cYou're missing argument 3 and 4, please try again: &7/tablist modify<reset>"
 		else:
 			send "%{_config}.get("server_prefix")% &cSorry you do not have access to this!"
