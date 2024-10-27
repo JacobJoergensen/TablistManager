@@ -1,7 +1,6 @@
 import:
 	java.util.ArrayList
 	java.util.HashMap
-	java.util.function.Consumer
 	java.io.BufferedReader
 	java.io.File
 	java.io.FileReader
