@@ -56,7 +56,7 @@
 <br>
 
 ## Dependencies
-You will need to have installed, <strong>Skript-Reflect</strong> together with <strong>Skript</strong> to run TablistManager.
+You will need to have installed, <strong>Skript</strong> together with <strong>Skript-Reflect</strong> to run TablistManager.
 - Install <strong>A permission plugin</strong> for group and rank features to be enabled. Also remember to install <strong>Vault</strong>.
 - Install <strong>Essentials</strong> or <strong>CMI</strong> for the currency placeholders to be enabled. Also remember to install <strong>Vault</strong>.
 
