@@ -16,7 +16,7 @@ on load:
 		generateConfig()
 		send "&7[&eTABLIST MANAGER&7] &aWas loaded correctly &8(&cNO ERRORS&8).%nl%&aWIKI: &ehttps://jacobjoergensen.gitbook.io/tablistmanager/%nl%&aREPORT BUGS & IDEAS: &ehttps://github.com/JacobJoergensen/TablistManager/issues" to console
 	else:
-		send "&7[&eTABLIST MANAGER&7] &cYou will need to have Skript-Reflect installed on your server together Skript to run TablistManager" to console
+		send "&7[&eTABLIST MANAGER&7] &cSkript-Reflect together with Skript is required to use TablistManager!" to console
 
 plural expression (get) (version) [(url)] %string%:
 	return type: strings
